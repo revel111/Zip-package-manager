@@ -1,24 +1,38 @@
-CREATE TABLE users
+CREATE DATABASE IF NOT EXISTS zipManager;
+USE zipManager;
+
+CREATE TABLE IF NOT EXISTS users
 (
     id       INT AUTO_INCREMENT PRIMARY KEY,
     email    VARCHAR(255) NOT NULL,
-    nickname VARCHAR(255) NOT NULL
+    nickname VARCHAR(255) NOT NULL,
+    date_of_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE zip_types
+CREATE TABLE IF NOT EXISTS types
 (
     id               INT AUTO_INCREMENT PRIMARY KEY,
     name             VARCHAR(255) NOT NULL,
-    date_of_creation DATE DEFAULT CURRENT_DATE
+    date_of_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE zips
+CREATE TABLE IF NOT EXISTS zips
 (
     id               INT AUTO_INCREMENT PRIMARY KEY,
     name             VARCHAR(255) NOT NULL,
     zip_type_id      INT,
     user_id          INT,
-    date_of_creation DATE DEFAULT CURRENT_DATE,
-    FOREIGN KEY (zip_type_id) REFERENCES zip_types (id),
+    date_of_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (zip_type_id) REFERENCES types (id),
     FOREIGN KEY (user_id) REFERENCES users (id)
+);
+
+CREATE TABLE IF NOT EXISTS zip_types
+(
+    zip_id           INT,
+    type_id          INT,
+    date_of_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (zip_id, type_id),
+    FOREIGN KEY (zip_id) REFERENCES zips (id),
+    FOREIGN KEY (type_id) REFERENCES types (id)
 );
