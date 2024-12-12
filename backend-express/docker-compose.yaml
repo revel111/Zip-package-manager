@@ -3,7 +3,7 @@ services:
     image: mysql:8.0
     restart: always
     environment:
-#      MYSQL_ROOT_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: zipManager
     ports:
       - "3306:3306"
