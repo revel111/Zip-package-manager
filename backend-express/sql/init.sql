@@ -3,9 +3,9 @@ USE zipManager;
 
 CREATE TABLE IF NOT EXISTS users
 (
-    id       INT AUTO_INCREMENT PRIMARY KEY,
-    email    VARCHAR(255) NOT NULL,
-    nickname VARCHAR(255) NOT NULL,
+    id               INT AUTO_INCREMENT PRIMARY KEY,
+    email            VARCHAR(255) NOT NULL,
+    nickname         VARCHAR(255) NOT NULL,
     date_of_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -20,8 +20,9 @@ CREATE TABLE IF NOT EXISTS zips
 (
     id               INT AUTO_INCREMENT PRIMARY KEY,
     name             VARCHAR(255) NOT NULL,
-    zip_type_id      INT,
-    user_id          INT,
+    zip_type_id      INT          NOT NULL,
+    user_id          INT          NOT NULL,
+    zip_file         LONGBLOB     NOT NULL,
     date_of_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (zip_type_id) REFERENCES types (id),
     FOREIGN KEY (user_id) REFERENCES users (id)
@@ -29,8 +30,8 @@ CREATE TABLE IF NOT EXISTS zips
 
 CREATE TABLE IF NOT EXISTS zip_types
 (
-    zip_id           INT,
-    type_id          INT,
+    zip_id           INT NOT NULL,
+    type_id          INT NOT NULL,
     date_of_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (zip_id, type_id),
     FOREIGN KEY (zip_id) REFERENCES zips (id),

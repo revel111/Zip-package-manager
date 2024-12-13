@@ -7,6 +7,8 @@ const corsOptions = {
 
 const indexRouter = require('./routes/indexRouter');
 const userRouter = require('./routes/userRouter');
+const zipRouter = require('./routes/zipRouter');
+const zipTypeRouter = require('./routes/zipTypeRouter');
 
 // const connection = require('./db')
 
@@ -16,7 +18,13 @@ app.use(cors(corsOptions));
 app.use(logger('dev'));
 app.use(express.json());
 
-app.use('/', indexRouter);
-app.use('/users', userRouter);
+const apiRouter = express.Router();
+
+apiRouter.use('/', indexRouter);
+apiRouter.use('/users', userRouter);
+apiRouter.use('/zips', zipRouter);
+apiRouter.use('/zips', zipTypeRouter);
+
+app.use('api', apiRouter);
 
 module.exports = app;
