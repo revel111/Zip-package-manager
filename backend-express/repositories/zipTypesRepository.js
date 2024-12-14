@@ -1,36 +1,39 @@
 const connection = require('../db');
 
-const getAllZipTypes = async () => {
+const getAll = async () => {
     return await connection.query(`SELECT *
                                    FROM types`);
 };
 
-const getZipTypeByName = async (name) => {
+const getByName = async (name) => {
     const [rows] = await connection.execute('SELECT * FROM types WHERE name = ?', [name]);
     return rows.length > 0 ? rows[0] : null;
 };
 
-const deleteZipType = async (id) => {
-    const [result] = await connection.execute(`DELETE
-                                               FROM types
-                                               WHERE id = ?`, [id]);
-
-    return result.affectedRows > 0;
+const deleteById = async (id) => {
+    await connection.execute(`DELETE
+                              FROM types
+                              WHERE id = ?`, [id]);
 };
 
-const createZipType = async (name) => {
+const create = async (name) => {
     const [result] = await connection.execute('INSERT INTO types (name) VALUES (?)', [name]);
 
     return {name: name, id: result.insertId};
 };
 
-// const updateZipType = async (data) => {
-//
-// };
+const update = async (name, id) => {
+    await connection.query(`UPDATE zip_types
+                            SET name = ?
+                            WHERE id = ?`, [name, id])
+
+    return {name: name, id: id};
+};
 
 module.exports = {
-    getAllZipTypes,
-    deleteZipType,
-    createZipType,
-    getZipTypeByName,
+    getAll,
+    deleteById,
+    create,
+    getByName,
+    update,
 };

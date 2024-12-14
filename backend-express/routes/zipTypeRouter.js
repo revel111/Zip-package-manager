@@ -1,25 +1,22 @@
 const express = require('express');
-const {getAllZipTypes, deleteZipType} = require("../repositories/zipTypesRepository");
+const {getAllZipTypes, createZipType, deleteZipType, updateZipType} = require("../services/zipTypeService")
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-    try {
-        const types = await getAllZipTypes();
-        res.status(200).json(types);
-    } catch (error) {
-        console.error('Error fetching zip types:', error);
-        res.status(500).json({error: 'Failed to fetch zip types.'});
-    }
+    res.status(200).json(await getAllZipTypes());
+});
+
+router.post('/', async (req, res) => {
+    res.status(200).json(await createZipType(req.body["name"]));
 });
 
 router.delete('/:id', async (req, res) => {
-    try {
-        const types = await (deleteZipType(req.params.id));
-        res.status(200).json(types);
-    } catch (error) {
-        console.error('Error deleting zip type:', error);
-        res.status(500).json({error: 'Failed to delete zip type.'});
-    }
+    await deleteZipType(req.params.id);
+    res.status(200).json();
+})
+
+router.put('/:id', async (req, res) => {
+    res.status(200).json(await updateZipType(req.params.id, req.body["name"]));
 });
 
 module.exports = router;

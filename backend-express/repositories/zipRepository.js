@@ -1,10 +1,10 @@
 const connection = require('../db');
 
-const countAllUsers = async function () {
+const countAllZips = async function () {
     return connection.query(`SELECT COUNT(*) AS total
-                             FROM users`)[0].total;
+                             FROM zips`)[0].total;
 };
 
 module.exports = {
-    countAllUsers,
-}
+    countAllZips,
+};
