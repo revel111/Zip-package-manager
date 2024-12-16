@@ -1,24 +1,39 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {api} from "../../app/Api.tsx";
 
-const AddZip: React.FC = () => {
-    interface Type {
-        id: string;
-        name: string;
-    }
+interface Type {
+    id: string;
+    name: string;
+}
 
-    interface Zip {
-        name: string;
-        fileName: string;
-        blob: Blob;
-        types: number[];
-    }
+interface Zip {
+    name: string;
+    fileName: string;
+    blob: Blob;
+    types: number[];
+}
+
+const AddZip: React.FC = () => {
+    const [types, setTypes] = useState<Type[]>([]);
+
+    useEffect(() => {
+        api.zipTypes.allZipTypes()
+            .then((response: { data: React.SetStateAction<Type[]>; }) => {
+                setTypes(response.data);
+            }).catch((err: never) => {
+            console.error(err);
+        });
+    }, []);
 
     const UploadZip = async () => {
 
     };
 
     const ChangeZip = async () => {
+
+    };
+
+    const changeType = async () => {
 
     };
 
@@ -33,11 +48,28 @@ const AddZip: React.FC = () => {
                     accept=".zip"
                     onChange={ChangeZip}
                 />
+
+                <div>
+                    <h1>Choose types</h1>
+                    {types.map((type) => (
+                        <label key={type.id}>
+                            <input
+                                type="checkbox"
+                                value={type.id}
+                                onChange={changeType}
+                            />
+                            {type.name}
+                        </label>
+                    ))}
+                </div>
+
+                <div>
+                    <label htmlFor="customName"></label>
+
+                </div>
+                <button type="submit">Upload</button>
             </form>
 
-            <div>
-                <label htmlFor="customName"></label>
-            </div>
         </div>
     );
 };
