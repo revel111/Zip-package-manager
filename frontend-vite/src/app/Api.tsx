@@ -12,6 +12,11 @@ const api = {
         createZipType: (name: string) => apiInstance.post(`api/zipTypes`, {name}),
         deleteZipType: (id: number) => apiInstance.delete(`api/zipTypes/${id}`),
         updateZipType: (id: number, name: string) => apiInstance.put(`api/zipTypes/${id}`, {id, name}),
+        createZip: (name: string, types: number[], fileName: string) => apiInstance.post(`api/zips`, {
+            name,
+            types,
+            fileName
+        }),
     }
 };
 

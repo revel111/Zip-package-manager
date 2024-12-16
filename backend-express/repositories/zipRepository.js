@@ -14,7 +14,23 @@ const create = async function (name, fileName, zip) {
     return {name: name, id: result.insertId, fileName: fileName};
 };
 
+const getById = async (id) => {
+    const connection = await createConnection();
+    const [rows] = await connection.execute('SELECT * FROM zips WHERE id = ?', [id]);
+
+    return rows.length > 0 ? rows[0] : null;
+};
+
+const deleteById = async (id) => {
+    const connection = await createConnection();
+    await connection.execute(`DELETE
+                              FROM zips
+                              WHERE id = ?`, [id]);
+};
+
 module.exports = {
     countAllZips,
-    create
+    create,
+    getById,
+    deleteById
 };

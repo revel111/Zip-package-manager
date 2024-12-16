@@ -15,7 +15,24 @@ const saveAllTypeIds = async (typeIds, zipId) => {
                             VALUES ?`, [records]);
 };
 
+const getAllByZipId = async (zipId) => {
+    const connection = createConnection();
+
+    const [rows] = await connection.query(`SELECT * FROM zip_types WHERE zip_id = ?`, [zipId]);
+
+    return rows.length > 0 ? rows : null;
+};
+
+const deleteAllByZipId = async (zipId) => {
+    const connection = await createConnection();
+    await connection.execute(`DELETE
+                              FROM zip_types
+                              WHERE zip_id = ?`, [zipId]);
+};
+
 module.exports = {
     deleteAllByTypeId,
-    saveAllTypeIds
+    saveAllTypeIds,
+    getAllByZipId,
+    deleteAllByZipId
 };

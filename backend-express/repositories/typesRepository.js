@@ -3,8 +3,8 @@ const createConnection = require('../db');
 const getById = async (id) => {
     const connection = await createConnection();
     const [rows] = await connection.query(`UPDATE types
-                                          SET name = ?
-                                          WHERE id = ?`, [name, id]);
+                                           SET name = ?
+                                           WHERE id = ?`, [name, id]);
 
     return rows.length > 0 ? rows[0] : null;
 };
@@ -54,6 +54,16 @@ const countTypes = async (typeIds) => {
     return rows.length > 0 ? rows[0].total : 0;
 };
 
+const getAllInList = async (ids) => {
+    const connection = await createConnection();
+
+    const [rows] = await connection.query(`SELECT *
+                                           FROM types t
+                                           WHERE t.id IN ?`, [ids]);
+
+    return rows;
+};
+
 module.exports = {
     getById,
     getAll,
@@ -61,5 +71,6 @@ module.exports = {
     create,
     getByName,
     update,
-    countTypes
+    countTypes,
+    getAllInList
 };

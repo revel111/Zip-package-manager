@@ -1,4 +1,4 @@
-const {getById, getAll, getByName, deleteById, create, update, countTypes} = require("../repositories/typesRepository");
+const {getById, getAll, getByName, deleteById, create, update, countTypes, getAllInList} = require("../repositories/typesRepository");
 const {HandlingError} = require('../handlers/errorHandler');
 const {deleteAll} = require('../services/zipTypesService');
 
@@ -36,10 +36,15 @@ const getCountTypes = async (typeIds) => {
     return await countTypes(typeIds);
 };
 
+const getAllZipTypesInList = async (ids) => {
+    return await getAllInList(ids);
+};
+
 module.exports = {
     getAllZipTypes,
     createZipType,
     deleteZipType,
     updateZipType,
-    getCountTypes
+    getCountTypes,
+    getAllZipTypesInList
 }
