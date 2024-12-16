@@ -1,39 +1,21 @@
-const connection = require('../db');
+const createConnection = require('../db');
 
-const getAll = async () => {
-    return await connection.query(`SELECT *
-                                   FROM types`);
-};
-
-const getByName = async (name) => {
-    const [rows] = await connection.execute('SELECT * FROM types WHERE name = ?', [name]);
-    return rows.length > 0 ? rows[0] : null;
-};
-
-const deleteById = async (id) => {
+const deleteAllByTypeId = async (typeId) => {
+    const connection = createConnection();
     await connection.execute(`DELETE
-                              FROM types
-                              WHERE id = ?`, [id]);
+                              FROM zip_types
+                              WHERE type_id = ?`, [typeId]);
 };
 
-const create = async (name) => {
-    const [result] = await connection.execute('INSERT INTO types (name) VALUES (?)', [name]);
+const saveAllTypeIds = async (typeIds, zipId) => {
+    const connection = createConnection();
 
-    return {name: name, id: result.insertId};
-};
-
-const update = async (name, id) => {
-    await connection.query(`UPDATE zip_types
-                            SET name = ?
-                            WHERE id = ?`, [name, id])
-
-    return {name: name, id: id};
+    const records = typeIds.map(typeId => [typeId, zipId]);
+    await connection.query(`INSERT INTO zip_types (type_id, zip_id)
+                            VALUES ?`, [records]);
 };
 
 module.exports = {
-    getAll,
-    deleteById,
-    create,
-    getByName,
-    update,
+    deleteAllByTypeId,
+    saveAllTypeIds
 };

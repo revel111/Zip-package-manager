@@ -23,9 +23,9 @@ const apiRouter = express.Router();
 apiRouter.use('/', indexRouter);
 apiRouter.use('/users', userRouter);
 apiRouter.use('/zips', zipRouter);
-apiRouter.use('/zips', zipTypeRouter);
+apiRouter.use('/zipTypes', zipTypeRouter);
 
-app.use('api', apiRouter);
+app.use('/api', apiRouter);
 app.use(errorHandler);
 
 module.exports = app;

@@ -1,5 +1,5 @@
 const express = require('express');
-const {getAllZipTypes, createZipType, deleteZipType, updateZipType} = require("../services/zipTypeService")
+const {getAllZipTypes, createZipType, deleteZipType, updateZipType} = require("../services/typesService")
 const router = express.Router();
 
 router.get('/', async (req, res) => {

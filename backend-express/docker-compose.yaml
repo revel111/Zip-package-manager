@@ -7,5 +7,6 @@ services:
       MYSQL_DATABASE: zipManager
     ports:
       - "3306:3306"
-    volumes:
-      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+#    volumes:
+#      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    command: --default-authentication-plugin=password

@@ -20,11 +20,9 @@ CREATE TABLE IF NOT EXISTS zips
 (
     id               INT AUTO_INCREMENT PRIMARY KEY,
     name             VARCHAR(255) NOT NULL,
-    zip_type_id      INT          NOT NULL,
     user_id          INT          NOT NULL,
     zip_file         LONGBLOB     NOT NULL,
     date_of_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (zip_type_id) REFERENCES types (id),
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
 

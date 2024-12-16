@@ -5,7 +5,6 @@ import {RouterProvider} from "react-router-dom";
 const App = memo(() => {
     return (
         <RouterProvider router={AppRoutes}/>
-        // <AppRoutes/>
     );
 });
 
