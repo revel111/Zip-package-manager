@@ -5,7 +5,7 @@ const cors = require("cors");
 const indexRouter = require('./routes/indexRouter');
 const userRouter = require('./routes/userRouter');
 const zipRouter = require('./routes/zipRouter');
-const zipTypeRouter = require('./routes/zipTypeRouter');
+const typeRouter = require('./routes/typeRouter');
 const {errorHandler} = require("./handlers/errorHandler");
 
 const app = express();
@@ -23,7 +23,7 @@ const apiRouter = express.Router();
 apiRouter.use('/', indexRouter);
 apiRouter.use('/users', userRouter);
 apiRouter.use('/zips', zipRouter);
-apiRouter.use('/zipTypes', zipTypeRouter);
+apiRouter.use('/zipTypes', typeRouter);
 
 app.use('/api', apiRouter);
 app.use(errorHandler);

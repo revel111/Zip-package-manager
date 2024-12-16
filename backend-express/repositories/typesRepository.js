@@ -1,9 +1,18 @@
 const createConnection = require('../db');
 
+const getById = async (id) => {
+    const connection = await createConnection();
+    const [rows] = await connection.query(`UPDATE types
+                                          SET name = ?
+                                          WHERE id = ?`, [name, id]);
+
+    return rows.length > 0 ? rows[0] : null;
+};
+
 const getAll = async () => {
     const connection = await createConnection();
     const [rows] = await connection.query(`SELECT *
-                             FROM types`)
+                                           FROM types`)
     return rows;
 };
 
@@ -46,6 +55,7 @@ const countTypes = async (typeIds) => {
 };
 
 module.exports = {
+    getById,
     getAll,
     deleteById,
     create,

@@ -1,20 +1,34 @@
-const HandleUpload = async () => {
+import {useState} from "react";
+import {api} from "../../app/Api.tsx";
+
+interface Type {
+    id: string;
+    name: string;
+}
+
+interface Zip {
+    name: string;
+    fileName: string;
+    blob: Blob;
+    types: number[];
+}
+
+const UploadZip = async () => {
 
 };
 
 
 const AddZip = () => {
-    interface File {
-        name: string,
-    }
+
 
     return (
         <div>
             <h1>Upload a new zip file</h1>
 
-            <form onSubmit={HandleUpload}>
+            <form onSubmit={UploadZip}>
                 <input
-
+                    type="file"
+                    id="zip_upload"
 
                 />
             </form>

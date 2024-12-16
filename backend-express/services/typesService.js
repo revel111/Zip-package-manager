@@ -1,5 +1,6 @@
-const {getAll, getByName, deleteById, create, update, countTypes} = require("../repositories/typesRepository");
+const {getById, getAll, getByName, deleteById, create, update, countTypes} = require("../repositories/typesRepository");
 const {HandlingError} = require('../handlers/errorHandler');
+const {deleteAll} = require('../services/zipTypesService');
 
 const getAllZipTypes = async function () {
     return await getAll();
@@ -7,18 +8,19 @@ const getAllZipTypes = async function () {
 
 const createZipType = async function (name) {
     await validateName(name)
-
     return await create(name);
 };
 
 const deleteZipType = async function (id) {
-    //TODO delete all record from zip_types (many-to-many)
+    await deleteAll(id);
     await deleteById(id);
 };
 
 const updateZipType = async function (id, name) {
-    await validateName(name);
+    if (!await getById(id))
+        throw new HandlingError(404, "Type Not Found");
 
+    await validateName(name);
     return await update(id, name);
 };
 
