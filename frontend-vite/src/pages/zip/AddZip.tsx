@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
-import {api} from "../../app/Api.tsx";
+import api from "../../app/Api.tsx";
 
 interface Type {
-    id: string;
+    id: number;
     name: string;
 }
 
@@ -20,7 +20,7 @@ const AddZip: React.FC = () => {
         api.zipTypes.allZipTypes()
             .then((response: { data: React.SetStateAction<Type[]>; }) => {
                 setTypes(response.data);
-            }).catch((err: never) => {
+            }).catch((err: Error) => {
             console.error(err);
         });
     }, []);
@@ -36,6 +36,10 @@ const AddZip: React.FC = () => {
     const changeType = async () => {
 
     };
+
+    // const changeName = async () => {
+    //
+    // };
 
     return (
         <div>
@@ -64,8 +68,13 @@ const AddZip: React.FC = () => {
                 </div>
 
                 <div>
-                    <label htmlFor="customName"></label>
-
+                    <label htmlFor="customName">Enter the name of upload</label>
+                    <input
+                        id="customName"
+                        type="text"
+                        name="customName"
+                        // onChange={changeName}
+                    />
                 </div>
                 <button type="submit">Upload</button>
             </form>

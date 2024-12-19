@@ -1,5 +1,4 @@
 import {createBrowserRouter} from 'react-router-dom';
-// import {Route, Routes} from 'react-router-dom';
 import Home from '../pages/home/Home';
 import Error from '../pages/error/Error';
 import AddZip from "../pages/zip/AddZip";
@@ -12,19 +11,18 @@ const AppRoutes = createBrowserRouter([
         element: <Layout/>,
         children: [
             {
-                path: '/',
+                path: 'home',
                 element: <Home/>
             },
             {
-                path: '/zip',
-                // element: <Zip/>, // Parent route for /zip
+                path: 'zip',
                 children: [
                     {
                         path: 'add',
                         element: <AddZip/>
                     },
                     {
-                        path: '/:id',
+                        path: ':id',
                         element: <ViewZip/>
                     }
                 ]
@@ -36,5 +34,6 @@ const AppRoutes = createBrowserRouter([
         ]
     }
 ]);
+
 
 export {AppRoutes};
