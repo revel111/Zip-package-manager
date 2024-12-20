@@ -1,12 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const {getZipCount} = require('../services/zipService')
-const {getUserCount} = require('../services/userService')
+const {getZipCount} = require('../services/zipService');
+const {getUserCount} = require('../services/userService');
+const {countAllTypes} = require('../services/typesService');
 
 router.get('/', async (req, res) => {
     res.status(200).json({
             userCount: await getUserCount(),
-            zipCount: await getZipCount()
+            zipCount: await getZipCount(),
+            typeCount: await countAllTypes(),
         }
     );
 });

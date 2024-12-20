@@ -1,4 +1,15 @@
-const {getById, getAll, getByName, deleteById, create, update, countTypes, getAllInList} = require("../repositories/typesRepository");
+const {
+    getById,
+    getAll,
+    getByName,
+    deleteById,
+    create,
+    update,
+    countTypes,
+    getAllInList,
+    countAll,
+    getAllPaginated
+} = require("../repositories/typesRepository");
 const {HandlingError} = require('../handlers/errorHandler');
 const {deleteAll} = require('../services/zipTypesService');
 
@@ -40,11 +51,29 @@ const getAllZipTypesInList = async (ids) => {
     return await getAllInList(ids);
 };
 
+const countAllTypes = async () => {
+    return await countAll();
+};
+
+const getPaginatedTypes = async (page, pageSize) => {
+    const count = await countAllTypes();
+    const offset = (page - 1) * pageSize;
+    const rows = await getAllPaginated(page, offset);
+    const totalPages = Math.ceil(count / pageSize);
+
+    return {
+        rows: rows,
+        totalPages: totalPages
+    };
+};
+
 module.exports = {
     getAllZipTypes,
     createZipType,
     deleteZipType,
     updateZipType,
     getCountTypes,
-    getAllZipTypesInList
+    getAllZipTypesInList,
+    countAllTypes,
+    getPaginatedTypes
 }

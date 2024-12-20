@@ -64,6 +64,24 @@ const getAllInList = async (ids) => {
     return rows;
 };
 
+const countAll = async () => {
+    const connection = await createConnection();
+
+    const [rows] = await connection.query(`SELECT COUNT(*) AS total
+                                           FROM types`);
+    return rows.length > 0 ? rows[0].total : 0;
+};
+
+const getAllPaginated = async (page, offset) => {
+    const connection = await createConnection();
+
+    const [rows] = await connection.query(`SELECT *
+                                           FROM types
+                                           LIMIT ? OFFSET ?`, [page, offset]);
+
+    return rows;
+};
+
 module.exports = {
     getById,
     getAll,
@@ -72,5 +90,7 @@ module.exports = {
     getByName,
     update,
     countTypes,
-    getAllInList
+    getAllInList,
+    countAll,
+    getAllPaginated
 };
