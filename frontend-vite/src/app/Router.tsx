@@ -30,18 +30,18 @@ const AppRoutes = createBrowserRouter([
             },
             {
                 path: 'types',
-                children: [
-                    {
-                        path: '/',
-                        element: <Types/>,
-                        loader: async ({request}) => {
-                            const url = new URL(request.url);
-                            const page = parseInt(url.searchParams.get('page') || '1', 10);
-                            const pageSize = parseInt(url.searchParams.get('pageSize') || '10', 10);
-                            return {page, pageSize};
-                        }
-                    }
-                ]
+                // children: [
+                //     {
+                //         path: '/',
+                element: <Types/>,
+                        // loader: async ({request}) => {
+                        //     const url = new URL(request.url);
+                        //     const page = parseInt(url.searchParams.get('page') || '1', 10);
+                        //     const pageSize = parseInt(url.searchParams.get('pageSize') || '10', 10);
+                        //     return {page, pageSize};
+                        // }
+                    // }
+                // ]
             },
             {
                 path: '*',

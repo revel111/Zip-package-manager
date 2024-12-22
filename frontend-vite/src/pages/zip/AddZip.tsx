@@ -4,6 +4,8 @@ import api from "../../app/Api.tsx";
 interface Type {
     id: number;
     name: string;
+    date_of_creation: string;
+    date_of_modification: string;
 }
 
 interface Zip {

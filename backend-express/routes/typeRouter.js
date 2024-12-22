@@ -12,12 +12,12 @@ router.get('/', async (req, res) => {
     res.status(200).json(await getAllZipTypes());
 });
 
-router.get('/pages', async (req, res) => {
-    const page = parseInt(req.params.page) || 1;
-    const pageSize = parseInt(req.params.pageSize) || 10;
-
-    res.status(200).json(await getPaginatedTypes(page, pageSize));
-});
+// router.get('/pages', async (req, res) => {
+//     const page = parseInt(req.params.page) || 1;
+//     const pageSize = parseInt(req.params.pageSize) || 10;
+//
+//     res.status(200).json(await getPaginatedTypes(page, pageSize));
+// });
 
 router.post('/', async (req, res) => {
     res.status(200).json(await createZipType(req.body["name"]));

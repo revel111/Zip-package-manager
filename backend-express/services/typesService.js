@@ -32,7 +32,9 @@ const updateZipType = async function (id, name) {
         throw new HandlingError(404, "Type Not Found");
 
     await validateName(name);
-    return await update(id, name);
+    await update(id, name);
+
+    return await getById(id);
 };
 
 const validateName = async function (name) {
