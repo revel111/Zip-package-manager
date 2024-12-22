@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
 import api from "../../app/Api.tsx";
+import SearchBar from "../components/SearchBar";
 
 interface Counts {
     userCount: number,
@@ -21,6 +22,8 @@ const Home = () => {
 
     return (
         <div>
+            <SearchBar/>
+
             <div>
                 <p>
                     Users:

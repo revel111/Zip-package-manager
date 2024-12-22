@@ -2,6 +2,7 @@ const {countAllZips, create, getById, deleteById} = require('../repositories/zip
 const {HandlingError} = require("../handlers/errorHandler");
 const {getCountTypes, getAllZipTypesInList} = require('../services/typesService');
 const {saveAll, getAllZipTypesByZipId, deleteAllZipTypesByZipId} = require('../services/zipTypesService');
+const {getPaginatedByName} = require('../repositories/zipRepository');
 
 const getZipCount = async function () {
     return await countAllZips();
@@ -43,9 +44,22 @@ const deleteZipById = async (id) => {
     await deleteAllZipTypesByZipId(id);
 };
 
+const getPaginatedZips = async (name, page, pageSize) => {
+    const count = await getZipCount();
+    const offset = (page - 1) * pageSize;
+    const rows = await getPaginatedByName(name, page, offset);
+    const totalPages = Math.ceil(count / pageSize);
+
+    return {
+        rows: rows,
+        totalPages: totalPages
+    };
+};
+
 module.exports = {
     getZipCount,
     createZip,
     getZipById,
-    deleteZipById
+    deleteZipById,
+    getPaginatedZips
 };

@@ -34,6 +34,7 @@ const api = {
                 },
             });
         },
+        getByName: () => apiInstance.get(`/zips/paginated`)
     },
     index: {
         fetchStats: () => apiInstance.get(`/`),

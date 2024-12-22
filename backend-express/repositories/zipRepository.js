@@ -28,9 +28,28 @@ const deleteById = async (id) => {
                               WHERE id = ?`, [id]);
 };
 
+const getPaginatedByName = async (name, page, offset) => {
+    const connection = await createConnection();
+
+    let rows;
+
+    if (name)
+        [rows] = await connection.query(`SELECT *
+                                         FROM zips
+                                         WHERE name LIKE ?
+                                         LIMIT ? OFFSET ?`, [`%${name}%`, page, offset])
+    else
+        [rows] = await connection.query(`SELECT *
+                                         FROM zips
+                                         LIMIT ? OFFSET ?`, [page, offset])
+
+    return rows;
+};
+
 module.exports = {
     countAllZips,
     create,
     getById,
-    deleteById
+    deleteById,
+    getPaginatedByName
 };
