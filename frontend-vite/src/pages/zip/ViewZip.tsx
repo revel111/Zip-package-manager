@@ -9,39 +9,38 @@ interface ViewZip {
     name: string;
     user_id: number;
     file_name: string;
-    date_of_creation: Date;
-    date_of_modification: Date;
+    date_of_creation: string;
+    date_of_modification: string;
 }
 
 interface User {
     id: number;
     email: string;
     nickname: string;
-    date_of_creation: Date;
-    date_of_modification: Date;
+    date_of_creation: string;
+    date_of_modification: string;
 }
 
 const ViewZip = () => {
     const navigate = useNavigate();
     const {id} = useParams();
-    const [zip, setZip] = useState<ViewZip | null>(null);
+    const [zip, setZip] = useState<ViewZip>();
     const [types, setTypes] = useState<Type[]>([]);
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<User>();
 
     useEffect(() => {
         api.zips.getById(Number(id))
             .then(response => {
-                if (response.status === 404) {
-                    navigate('/error');
-                    return;
-                }
-                else
-                    setZip(response.data);
+                setZip(response.data);
             })
             .catch((err: Error) => {
                 console.error(`Error fetching zip: ${err}`);
+                navigate('/error');
+                return;
             });
+    }, [id, navigate]);
 
+    useEffect(() => {
         api.zips.getTypesById(Number(id))
             .then(response => {
                 setTypes(response.data);
@@ -53,33 +52,49 @@ const ViewZip = () => {
 
     useEffect(() => {
         if (zip?.user_id) {
-            api.users.getById(Number(zip.user_id))
+            api.users.getById(zip.user_id)
                 .then(response => {
-                    if (response.status === 200)
-                        setUser(response.data);
+                    setUser(response.data);
                 })
                 .catch((err: Error) => {
                     console.error(`Error fetching user: ${err}`);
                 });
         }
-    }, [zip]);
+    }, [zip?.user_id]);
 
-
-    return (<div>
+    return (
         <div>
-            {zip?.name}
-            {zip?.file_name}
-            {zip?.user_id}
-        </div>
-        <div>
-            {types.map(x => x.id + " " + x.name)}
-        </div>
-        <div>
-            {/*{user.id}*/}
-            {/*{user.nickname}*/}
-            {/*{user.email}*/}
-        </div>
-    </div>);
+            <div>
+                <h1>Zip:</h1>
+                {zip?.name} <br/>
+                {zip?.file_name}<br/>
+                {zip?.user_id}<br/>
+            </div>
+            <div>
+                {types && types.length > 0 ? (
+                    <>
+                        <h1>Types</h1>
+                        {types.map((x) => (
+                            <div key={x.id}>{x.id} {x.name}</div>
+                        ))}
+                    </>
+                ) : (
+                    <div>No types available</div>
+                )}
+            </div>
+            <div>
+                {user ? (
+                    <>
+                        <h1>User:</h1>
+                        {user?.id}<br/>
+                        {user?.nickname}<br/>
+                        {user?.email}<br/>
+                    </>
+                ) : (
+                    <div>User account was deleted.</div>
+                )}
+            </div>
+        </div>);
 };
 
 export default ViewZip;

@@ -17,6 +17,9 @@ const getAllTypesByZipId = async (zipId) => {
     const {getAllZipTypesInList} = require("./typesService");
     const zipTypes = await getAllByZipId(zipId);
 
+    if (!zipTypes)
+        return [];
+
     return await getAllZipTypesInList(zipTypes.map(x => x.type_id));
 };
 
