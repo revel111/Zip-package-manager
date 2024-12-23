@@ -16,7 +16,7 @@ const AppRoutes = createBrowserRouter([
                 element: <Home/>
             },
             {
-                path: 'zip',
+                path: 'zips',
                 children: [
                     {
                         path: 'add',

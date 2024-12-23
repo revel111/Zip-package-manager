@@ -55,7 +55,7 @@ const getAllInList = async (ids) => {
 
     const [rows] = await connection.query(`SELECT *
                                            FROM types t
-                                           WHERE t.id IN ?`, [ids]);
+                                           WHERE t.id IN (?)`, [ids]);
 
     return rows;
 };

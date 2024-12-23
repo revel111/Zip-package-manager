@@ -1,6 +1,7 @@
 const multer = require("multer");
 const express = require('express');
 const {createZip, getZipById, deleteZipById, getPaginatedZips} = require('../services/zipService');
+const {getAllTypesByZipId} = require("../services/zipTypesService");
 const router = express.Router();
 
 const storage = multer.memoryStorage();
@@ -27,6 +28,10 @@ router.get('/paginated', async (req, res) => {
     const name = req.params.name;
 
     res.status(200).json(await getPaginatedZips(name, page, pageSize));
+});
+
+router.get('/:id/types', async (req, res) => {
+    res.status(200).json(await getAllTypesByZipId(req.params.id));
 });
 
 module.exports = router;

@@ -34,7 +34,12 @@ const api = {
                 },
             });
         },
-        getByName: () => apiInstance.get(`/zips/paginated`)
+        getByName: () => apiInstance.get(`/zips/paginated`),
+        getTypesById: (id: number) => apiInstance.get(`/zips/${id}/types`),
+        getById: (id: number) => apiInstance.get(`/zips/${id}`)
+    },
+    users: {
+        getById: (id: number) => apiInstance.get(`/users/${id}`)
     },
     index: {
         fetchStats: () => apiInstance.get(`/`),

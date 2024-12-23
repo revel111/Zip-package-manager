@@ -1,6 +1,6 @@
 const {countAllZips, create, getById, deleteById} = require('../repositories/zipRepository')
 const {HandlingError} = require("../handlers/errorHandler");
-const {getCountTypes, getAllZipTypesInList} = require('../services/typesService');
+const {getCountTypes} = require('../services/typesService');
 const {saveAll, getAllZipTypesByZipId, deleteAllZipTypesByZipId} = require('../services/zipTypesService');
 const {getPaginatedByName} = require('../repositories/zipRepository');
 
@@ -29,12 +29,6 @@ const getZipById = async (id) => {
 
     if (!zip)
         throw new HandlingError(404, 'File does not exist.')
-
-    const zipTypes = await getAllZipTypesByZipId(id);
-    // const types = await getAllZipTypesInList(zipTypes);
-    //TODO when fetch?
-
-    zip.types = zipTypes;
 
     return zip;
 };
