@@ -34,7 +34,22 @@ const api = {
                 },
             });
         },
-        getByName: () => apiInstance.get(`/zips/paginated`),
+        getPaginatedByName: (name: string | null, page: string | null, pageSize: string | null) => {
+            return apiInstance.get('/zips/paginated', {
+                params: {
+                    name: name,
+                    page: page,
+                    pageSize: pageSize
+                }
+            });
+        },
+        getByName: (name: string) => {
+            return apiInstance.get('/zips/names', {
+                params: {
+                    name: name,
+                }
+            });
+        },
         getTypesById: (id: number) => apiInstance.get(`/zips/${id}/types`),
         getById: (id: number) => apiInstance.get(`/zips/${id}`)
     },

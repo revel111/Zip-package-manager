@@ -118,4 +118,5 @@ const AddZip: React.FC = () => {
     );
 };
 
-export {AddZip, Type};
+export {AddZip};
+export type { Type };
