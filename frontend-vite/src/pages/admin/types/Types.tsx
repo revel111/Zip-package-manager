@@ -1,6 +1,4 @@
-import {Type} from "../zip/AddZip.tsx";
 import React, {useEffect, useState} from "react";
-import api from "../../app/Api.tsx";
 import {
     Button, ClickAwayListener,
     Paper,
@@ -13,6 +11,8 @@ import {
     TableRow, TextField
 } from "@mui/material";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
+import {Type} from "../../zip/AddZip.tsx";
+import api from "../../../app/Api.tsx";
 
 const Types = () => {
     const [types, setTypes] = useState<Type[]>([]);

@@ -1,6 +1,15 @@
+import {Link} from "react-router-dom";
+
 const Header = () => {
     return (
-        <div>header</div>
+        <div>
+            <div>
+                <Link to={`/`}>Main page</Link>
+            </div>
+            <div>
+                <Link to={`/zips`}>Zips</Link>
+            </div>
+        </div>
     );
 };
 

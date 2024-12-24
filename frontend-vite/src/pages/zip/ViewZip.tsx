@@ -1,5 +1,5 @@
 import {useParams, useNavigate} from "react-router-dom";
-import {SetStateAction, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {Type} from "./AddZip.tsx";
 import api from "../../app/Api.tsx";
 

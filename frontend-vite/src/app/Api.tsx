@@ -8,12 +8,12 @@ const apiInstance: AxiosInstance = axios.create({
 
 const api = {
     zipTypes: {
-        paginatedZipTypes: () => axios.get('/zipTypes/pages', {
-            params: {
-                page: 1,
-                pageSize: 10
-            }
-        }),
+        // paginatedZipTypes: () => axios.get('/zipTypes/pages', {
+        //     params: {
+        //         page: 1,
+        //         pageSize: 10
+        //     }
+        // }),
         allZipTypes: () => apiInstance.get(`/zipTypes`),
         createZipType: (name: string) => apiInstance.post(`/zipTypes`, {name}),
         deleteZipType: (id: number) => apiInstance.delete(`/zipTypes/${id}`),

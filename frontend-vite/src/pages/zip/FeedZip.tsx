@@ -1,5 +1,5 @@
-import {useSearchParams} from "react-router-dom";
-import {Pagination} from "@mui/material";
+import {Link, useSearchParams} from "react-router-dom";
+import {Pagination, PaginationItem} from "@mui/material";
 import {useEffect, useState} from "react";
 import api from "../../app/Api.tsx";
 import SearchBar, {Zip} from "../components/SearchBar.tsx";
@@ -36,12 +36,28 @@ const FeedZip = () => {
             </div>
 
             <div>
-                <Pagination count={page?.totalPages} showFirstButton showLastButton>
-                </Pagination>
+                {page?.rows.map((x) => (
+                    <div>
+                        <Link to={`/zips/${x.id}`}>{x.name}</Link><br/>
+                    </div>
+                ))}
+            </div>
+
+            <div>
+                <Pagination count={page?.totalPages}
+                            page={page?.page}
+                            showFirstButton showLastButton
+                            renderItem={(item) => (
+                                <PaginationItem
+                                    component={Link}
+                                    to={`/zips${item.page === 1 ? '' : `?page=${item.page}`}`}
+                                    {...item}
+                                />
+                            )}
+                />
             </div>
         </div>
-    )
+    );
 };
-
 
 export default FeedZip;
