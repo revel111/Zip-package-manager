@@ -5,7 +5,7 @@ import {useEffect, useState} from "react";
 import api from "../../app/Api.tsx";
 import {useNavigate} from "react-router-dom";
 
-interface Zip {
+export interface Zip {
     id: number;
     name: string;
 }
@@ -76,5 +76,4 @@ const SearchBar = () => {
 };
 
 
-export {SearchBar};
-export type { Zip };
+export default SearchBar;

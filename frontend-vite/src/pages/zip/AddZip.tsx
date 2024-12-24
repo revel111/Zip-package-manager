@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import api from "../../app/Api.tsx";
 
-interface Type {
+export interface Type {
     id: number;
     name: string;
     date_of_creation: string;
@@ -119,4 +119,3 @@ const AddZip: React.FC = () => {
 };
 
 export {AddZip};
-export type { Type };

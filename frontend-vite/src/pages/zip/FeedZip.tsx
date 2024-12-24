@@ -2,7 +2,7 @@ import {useSearchParams} from "react-router-dom";
 import {Pagination} from "@mui/material";
 import {useEffect, useState} from "react";
 import api from "../../app/Api.tsx";
-import {SearchBar, Zip} from "../components/SearchBar.tsx";
+import SearchBar, {Zip} from "../components/SearchBar.tsx";
 
 // interface PageZip {
 //     name: string
