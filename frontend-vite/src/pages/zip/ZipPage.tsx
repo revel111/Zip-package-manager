@@ -4,7 +4,7 @@ import {Type} from "./AddZip.tsx";
 import api from "../../app/Api.tsx";
 
 
-interface ViewZip {
+export interface ViewZip {
     id: number;
     name: string;
     user_id: number;
@@ -13,7 +13,7 @@ interface ViewZip {
     date_of_modification: string;
 }
 
-interface User {
+export interface User {
     id: number;
     email: string;
     nickname: string;
@@ -21,7 +21,7 @@ interface User {
     date_of_modification: string;
 }
 
-const ViewZip = () => {
+const ZipPage = () => {
     const navigate = useNavigate();
     const {id} = useParams();
     const [zip, setZip] = useState<ViewZip>();
@@ -97,4 +97,4 @@ const ViewZip = () => {
         </div>);
 };
 
-export default ViewZip;
+export default ZipPage;

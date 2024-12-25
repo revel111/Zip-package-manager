@@ -41,4 +41,8 @@ router.get('/:id/types', async (req, res) => {
     res.status(200).json(await getAllTypesByZipId(req.params.id));
 });
 
+router.get('/:id/download', async (req, res) => {
+
+});
+
 module.exports = router;

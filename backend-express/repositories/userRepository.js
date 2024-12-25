@@ -15,7 +15,47 @@ const getById = async (id) => {
     return rows.length > 0 ? rows[0] : null;
 };
 
+const getByEmail = async (email) => {
+    const connection = await createConnection();
+
+    const [rows] = await connection.query(`SELECT *
+                                           FROM users
+                                           WHERE email = ?`, [email]);
+    return rows.length > 0 ? rows[0] : null;
+};
+
+const deleteById = async (id) => {
+    const connection = await createConnection();
+
+    await connection.execute(`DELETE
+                              FROM users
+                              WHERE id = ?`, [id]);
+};
+
+const update = async (id, password, email, nickname) => {
+    const connection = await createConnection();
+
+    await connection.execute(`UPDATE users
+                              SET nickname = ?,
+                                  email    = ?,
+                                  password = ?
+                              WHERE id = ?`, [nickname, email, password, id]);
+};
+
+const create = async (email, password, nickname) => {
+    const connection = await createConnection();
+
+    const [res] = await connection.execute(`INSERT INTO users (email, password, nickname)
+                                            VALUES (?, ?, ?)`, [email, password, nickname]);
+
+    return {id: res.insertId, email: email, password: password, nickname: nickname};
+};
+
 module.exports = {
     countAllUsers,
-    getById
+    getById,
+    getByEmail,
+    deleteById,
+    update,
+    create
 }

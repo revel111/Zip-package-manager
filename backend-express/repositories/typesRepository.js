@@ -2,7 +2,9 @@ const createConnection = require('../db');
 
 const getById = async (id) => {
     const connection = await createConnection();
-    const [rows] = await connection.query('SELECT * FROM types WHERE id = ?', [id]);
+    const [rows] = await connection.query(`SELECT *
+                                           FROM types
+                                           WHERE id = ?`, [id]);
 
     return rows.length > 0 ? rows[0] : null;
 };
@@ -16,7 +18,9 @@ const getAll = async () => {
 
 const getByName = async (name) => {
     const connection = await createConnection();
-    const [rows] = await connection.execute('SELECT * FROM types WHERE name = ?', [name]);
+    const [rows] = await connection.execute(`SELECT *
+                                             FROM types
+                                             WHERE name = ?`, [name]);
     return rows.length > 0 ? rows[0] : null;
 };
 
@@ -29,7 +33,8 @@ const deleteById = async (id) => {
 
 const create = async (name) => {
     const connection = await createConnection();
-    const [result] = await connection.execute('INSERT INTO types (name) VALUES (?)', [name]);
+    const [result] = await connection.execute(`INSERT INTO types (name)
+                                               VALUES (?)`, [name]);
 
     return {name: name, id: result.insertId};
 };
@@ -56,7 +61,6 @@ const getAllInList = async (ids) => {
     const [rows] = await connection.query(`SELECT *
                                            FROM types t
                                            WHERE t.id IN (?)`, [ids]);
-
     return rows;
 };
 

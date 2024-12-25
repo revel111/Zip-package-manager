@@ -55,11 +55,11 @@ const getAllByName = async (name) => {
 const getAllByUserId = async (id) => {
     const connection = await createConnection();
 
-    [rows] = await connection.query(`SELECT id, name, user_id, file_name, date_of_creation, date_of_modification
+    const [rows] = await connection.query(`SELECT id, name
                                      FROM zips
-                                     WHERE id = ?`, [id]);
+                                     WHERE user_id = ?`, [id]);
 
-    return rows.length > 0 ? rows[0] : null;
+    return rows;
 };
 
 module.exports = {

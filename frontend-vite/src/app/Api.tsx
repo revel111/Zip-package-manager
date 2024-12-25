@@ -54,7 +54,8 @@ const api = {
         getById: (id: number) => apiInstance.get(`/zips/${id}`)
     },
     users: {
-        getById: (id: number) => apiInstance.get(`/users/${id}`)
+        getById: (id: number) => apiInstance.get(`/users/${id}`),
+        getZipsByUserId: (id: number) => apiInstance.get(`/users/${id}/zips`),
     },
     index: {
         fetchStats: () => apiInstance.get(`/`),

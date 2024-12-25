@@ -1,14 +1,15 @@
-import {createBrowserRouter} from 'react-router-dom';
+import {createBrowserRouter, Navigate} from 'react-router-dom';
 import Home from '../pages/home/Home';
 import Error from '../pages/error/Error';
 import Layout from "../layout/Layout.tsx";
-import ViewZip from "../pages/zip/ViewZip";
+import ZipPage from "../pages/zip/ZipPage.tsx";
 import AdminPage from "../pages/admin/AdminPage.tsx";
 import FeedZip from "../pages/zip/FeedZip.tsx";
 import {AddZip} from "../pages/zip/AddZip.tsx";
 import Types from "../pages/admin/types/Types.tsx";
 import Login from "../pages/authorization/Login.tsx";
 import Register from "../pages/authorization/Register.tsx";
+import PublicUserProfile from "../pages/user/PublicUserProfile.tsx";
 
 const AppRoutes = createBrowserRouter([
     {
@@ -18,6 +19,14 @@ const AppRoutes = createBrowserRouter([
             {
                 index: true,
                 element: <Home/>
+            },
+            {
+                path: 'home',
+                element: <Navigate to={'/'}/>
+            },
+            {
+                path: 'homepage',
+                element: <Navigate to={'/'}/>
             },
             {
                 path: 'admin',
@@ -41,7 +50,7 @@ const AppRoutes = createBrowserRouter([
                     },
                     {
                         path: ':id',
-                        element: <ViewZip/>
+                        element: <ZipPage/>
                     },
                     {
                         path: 'add',
@@ -50,12 +59,16 @@ const AppRoutes = createBrowserRouter([
                 ]
             },
             {
-                path: '/login',
+                path: 'login',
                 element: <Login/>
             },
             {
-                path: '/register',
+                path: 'register',
                 element: <Register/>
+            },
+            {
+                path: 'users/:id',
+                element: <PublicUserProfile/>
             },
             {
                 path: '*',

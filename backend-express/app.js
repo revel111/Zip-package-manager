@@ -7,6 +7,7 @@ const userRouter = require('./routes/userRouter');
 const zipRouter = require('./routes/zipRouter');
 const typeRouter = require('./routes/typeRouter');
 const {errorHandler} = require("./handlers/errorHandler");
+const cookieParser = require("cookie-parser");
 
 const app = express();
 
@@ -17,6 +18,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(logger('dev'));
 app.use(express.json());
+app.use(cookieParser());
 
 const apiRouter = express.Router();
 
