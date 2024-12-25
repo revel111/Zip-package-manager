@@ -2,7 +2,7 @@ import {Link, useSearchParams} from "react-router-dom";
 import {Pagination, PaginationItem} from "@mui/material";
 import {useEffect, useState} from "react";
 import api from "../../app/Api.tsx";
-import SearchBar, {Zip} from "../components/SearchBar.tsx";
+import SearchBar, {Zip} from "../../components/SearchBar.tsx";
 
 // interface PageZip {
 //     name: string
@@ -36,11 +36,14 @@ const FeedZip = () => {
             </div>
 
             <div>
-                {page?.rows.map((x) => (
-                    <div>
-                        <Link to={`/zips/${x.id}`}>{x.name}</Link><br/>
-                    </div>
-                ))}
+                {page?.rows.length > 0 ?
+                    page?.rows.map((x) => (
+                        <div>
+                            <Link to={`/zips/${x.id}`}>{x.name}</Link><br/>
+                        </div>
+                    )) : (
+                        <div>Results not found </div>
+                    )}
             </div>
 
             <div>

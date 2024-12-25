@@ -2,8 +2,8 @@ import {Autocomplete, IconButton, InputAdornment, TextField} from "@mui/material
 import SearchIcon from '@mui/icons-material/Search';
 import {useEffect, useState} from "react";
 // import debounce from 'lodash.debounce';
-import api from "../../app/Api.tsx";
-import {useNavigate} from "react-router-dom";
+import api from "../app/Api.tsx";
+import {createSearchParams, useNavigate} from "react-router-dom";
 
 export interface Zip {
     id: number;
@@ -17,20 +17,23 @@ const SearchBar = () => {
     const [zips, fetchZips] = useState<Zip[]>([]);
 
     useEffect(() => {
-        api.zips.getByName('d')
+        api.zips.getByName(searchTerm)
             .then(response => {
                 fetchZips(response.data);
             })
             .catch((err: Error) => {
                 console.error(`Error fetching user: ${err}`);
             });
-    }, []);
+    }, [searchTerm]);
 
     const handleSearchClick = () => {
-        if (selectedZip) {
-            navigate(`/zips/${selectedZip.id}`);
-        } else {
-            console.log('No zip selected or no search term.');
+        if (searchTerm) {
+            navigate({
+                pathname: `/zips`,
+                search: createSearchParams({
+                    name: searchTerm
+                }).toString()
+            });
         }
     };
 
@@ -56,12 +59,17 @@ const SearchBar = () => {
                     <TextField
                         {...params}
                         label="Enter the name"
+                        onKeyDown={e => {
+                            if (e.code === 'Enter') {
+                                handleSearchClick();
+                            }
+                        }}
                         slotProps={{
                             input: {
                                 ...params.InputProps,
                                 endAdornment: (
                                     <InputAdornment position="end">
-                                        <IconButton edge="end" onClick={() => handleSearchClick}>
+                                        <IconButton edge="end" onClick={handleSearchClick}>
                                             <SearchIcon/>
                                         </IconButton>
                                     </InputAdornment>

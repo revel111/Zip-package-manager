@@ -30,9 +30,9 @@
         file_name            VARCHAR(255) NOT NULL,
 
         date_of_creation     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        date_of_modification TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        date_of_modification TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 
-        FOREIGN KEY (user_id) REFERENCES users (id)
+#         FOREIGN KEY (user_id) REFERENCES users (id)
     );
 
     CREATE TABLE IF NOT EXISTS zip_types
@@ -43,9 +43,9 @@
         date_of_creation     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         date_of_modification TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-        PRIMARY KEY (zip_id, type_id),
-        FOREIGN KEY (zip_id) REFERENCES zips (id),
-        FOREIGN KEY (type_id) REFERENCES types (id)
+        PRIMARY KEY (zip_id, type_id)
+#         FOREIGN KEY (zip_id) REFERENCES zips (id),
+#         FOREIGN KEY (type_id) REFERENCES types (id)
     );
 
     CREATE TABLE IF NOT EXISTS roles
@@ -65,7 +65,7 @@
         date_of_creation     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         date_of_modification TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-        PRIMARY KEY (user_id, role_id),
-        FOREIGN KEY (user_id) REFERENCES users (id),
-        FOREIGN KEY (role_id) REFERENCES roles (id)
+        PRIMARY KEY (user_id, role_id)
+#         FOREIGN KEY (user_id) REFERENCES users (id),
+#         FOREIGN KEY (role_id) REFERENCES roles (id)
     );

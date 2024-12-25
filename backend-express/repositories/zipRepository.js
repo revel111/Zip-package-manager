@@ -9,14 +9,17 @@ const countAllZips = async function () {
 
 const create = async function (name, fileName, zip) {
     const connection = await createConnection();
-    const [result] = await connection.execute('INSERT INTO zips (name, file_name, zip_file, user_id) VALUES (?, ?, ?, ?)', [name, fileName, zip, 0]);
+    const [result] = await connection.execute(`INSERT INTO zips (name, file_name, zip_file, user_id)
+                                               VALUES (?, ?, ?, ?)`, [name, fileName, zip, 0]);
 
     return {name: name, id: result.insertId, fileName: fileName};
 };
 
 const getById = async (id) => {
     const connection = await createConnection();
-    const [rows] = await connection.execute('SELECT id, name, user_id, file_name, date_of_creation, date_of_modification FROM zips WHERE id = ?', [id]);
+    const [rows] = await connection.execute(`SELECT id, name, user_id, file_name, date_of_creation, date_of_modification
+                                             FROM zips
+                                             WHERE id = ?`, [id]);
 
     return rows.length > 0 ? rows[0] : null;
 };
@@ -47,7 +50,17 @@ const getAllByName = async (name) => {
                                      WHERE name LIKE ?`, [`%${name}%`]);
 
     return rows;
-}
+};
+
+const getAllByUserId = async (id) => {
+    const connection = await createConnection();
+
+    [rows] = await connection.query(`SELECT id, name, user_id, file_name, date_of_creation, date_of_modification
+                                     FROM zips
+                                     WHERE id = ?`, [id]);
+
+    return rows.length > 0 ? rows[0] : null;
+};
 
 module.exports = {
     countAllZips,
@@ -55,5 +68,6 @@ module.exports = {
     getById,
     deleteById,
     getPaginatedByName,
-    getAllByName
+    getAllByName,
+    getAllByUserId
 };

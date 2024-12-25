@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import api from "../../app/Api.tsx";
-import SearchBar from "../components/SearchBar";
+import SearchBar from "../../components/SearchBar";
 
 interface Counts {
     userCount: number,

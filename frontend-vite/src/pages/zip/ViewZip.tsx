@@ -48,7 +48,7 @@ const ViewZip = () => {
             .catch((err: Error) => {
                 console.error(`Error fetching types: ${err}`);
             });
-    }, [id, navigate]);
+    }, [id]);
 
     useEffect(() => {
         if (zip?.user_id) {

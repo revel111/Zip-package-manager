@@ -7,6 +7,8 @@ import AdminPage from "../pages/admin/AdminPage.tsx";
 import FeedZip from "../pages/zip/FeedZip.tsx";
 import {AddZip} from "../pages/zip/AddZip.tsx";
 import Types from "../pages/admin/types/Types.tsx";
+import Login from "../pages/authorization/Login.tsx";
+import Register from "../pages/authorization/Register.tsx";
 
 const AppRoutes = createBrowserRouter([
     {
@@ -46,6 +48,14 @@ const AppRoutes = createBrowserRouter([
                         element: <AddZip/>
                     }
                 ]
+            },
+            {
+                path: '/login',
+                element: <Login/>
+            },
+            {
+                path: '/register',
+                element: <Register/>
             },
             {
                 path: '*',
