@@ -7,6 +7,13 @@ const countAllUsers = async function () {
     return rows.length > 0 ? rows[0].total : 0;
 };
 
+const getAll = async function () {
+    const connection = await createConnection();
+    const [rows] = await connection.query(`SELECT id, nickname, email
+                                           FROM users`)
+    return rows;
+};
+
 const getById = async (id) => {
     const connection = await createConnection();
     const [rows] = await connection.query(`SELECT *
@@ -57,5 +64,6 @@ module.exports = {
     getByEmail,
     deleteById,
     update,
-    create
+    create,
+    getAll
 }

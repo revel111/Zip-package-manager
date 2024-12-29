@@ -65,3 +65,13 @@ CREATE TABLE IF NOT EXISTS users_roles
 
     PRIMARY KEY (user_id, role_id)
 );
+
+CREATE TABLE IF NOT EXISTS user_tokens
+(
+    user_id INT PRIMARY KEY,
+    token   TEXT NOT NULL
+);
+
+INSERT INTO roles (name)
+VALUES ('user'),
+       ('admin');

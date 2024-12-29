@@ -3,8 +3,10 @@
   <component name="SqlDialectMappings">
     <file url="file://$PROJECT_DIR$/repositories/typesRepository.js" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/repositories/userRepository.js" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/repositories/userRoleRepository.js" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/repositories/zipRepository.js" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/repositories/zipTypesRepository.js" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/sql/init.sql" dialect="MySQL" />
+    <file url="PROJECT" dialect="MySQL" />
   </component>
 </project>
