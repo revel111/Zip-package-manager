@@ -1,9 +1,33 @@
-import axios, {AxiosInstance} from 'axios';
+import axios, {AxiosInstance, InternalAxiosRequestConfig} from 'axios';
+import {AuthResponse} from "./dto/AuthResponse.ts";
 
-const baseURL = 'http://localhost:3000/api';
+export const baseURL = 'http://localhost:3000/api';
 
 const apiInstance: AxiosInstance = axios.create({
-    baseURL
+    baseURL: baseURL,
+    withCredentials: true,
+});
+
+apiInstance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+    config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`
+    return config;
+});
+
+apiInstance.interceptors.response.use((config) => {
+    return config;
+}, async (error) => {
+    const originalRequest = error.config;
+    if (error.response && error.response.status === 401 && error.config && !error.config._isRetry) {
+        originalRequest._isRetry = true;
+        try {
+            const response = await axios.get<AuthResponse>(`${baseURL}/users/refresh`, {withCredentials: true});
+            localStorage.setItem("token", response.data.accessToken);
+            return apiInstance.request(originalRequest);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    throw error;
 });
 
 const api = {
@@ -55,7 +79,17 @@ const api = {
     },
     users: {
         getById: (id: number) => apiInstance.get(`/users/${id}`),
+        getAll: () => apiInstance.get(`/users`),
         getZipsByUserId: (id: number) => apiInstance.get(`/users/${id}/zips`),
+        login: (email: string, password: string) => apiInstance.post(`/users/login`, {email, password}),
+        register: (email: string, password: string, confirmPassword: string, nickname: string) => apiInstance.post(`/users/register`, {
+            email,
+            password,
+            nickname,
+            confirmPassword
+        }),
+        logout: () => apiInstance.post(`/users/logout`),
+
     },
     index: {
         fetchStats: () => apiInstance.get(`/`),

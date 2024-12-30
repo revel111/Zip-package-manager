@@ -10,72 +10,79 @@ import Types from "../pages/admin/types/Types.tsx";
 import Login from "../pages/authorization/Login.tsx";
 import Register from "../pages/authorization/Register.tsx";
 import PublicUserProfile from "../pages/user/PublicUserProfile.tsx";
+import {useContext} from "react";
+import {Context} from "../main.tsx";
 
-const AppRoutes = createBrowserRouter([
-    {
-        path: '/',
-        element: <Layout/>,
-        children: [
-            {
-                index: true,
-                element: <Home/>
-            },
-            {
-                path: 'home',
-                element: <Navigate to={'/'}/>
-            },
-            {
-                path: 'homepage',
-                element: <Navigate to={'/'}/>
-            },
-            {
-                path: 'admin',
-                children: [
-                    {
-                        index: true,
-                        element: <AdminPage/>,
-                    },
-                    {
-                        path: 'types',
-                        element: <Types/>,
-                    }
-                ]
-            },
-            {
-                path: 'zips',
-                children: [
-                    {
-                        index: true,
-                        element: <FeedZip/>
-                    },
-                    {
-                        path: ':id',
-                        element: <ZipPage/>
-                    },
-                    {
-                        path: 'add',
-                        element: <AddZip/>
-                    }
-                ]
-            },
-            {
-                path: 'login',
-                element: <Login/>
-            },
-            {
-                path: 'register',
-                element: <Register/>
-            },
-            {
-                path: 'users/:id',
-                element: <PublicUserProfile/>
-            },
-            {
-                path: '*',
-                element: <Error/>
-            }
-        ]
-    }
-]);
 
-export {AppRoutes};
+const AppRoutes = () => {
+    const {store} = useContext(Context);
+
+    return createBrowserRouter([
+        {
+            path: '/',
+            element: <Layout/>,
+            children: [
+                {
+                    index: true,
+                    element: <Home/>
+                },
+                {
+                    path: 'home',
+                    element: <Navigate to={'/'}/>
+                },
+                {
+                    path: 'homepage',
+                    element: <Navigate to={'/'}/>
+                },
+                {
+                    path: 'admin',
+                    children: [
+                        {
+                            index: true,
+                            element: <AdminPage/>,
+                        },
+                        {
+                            path: 'types',
+                            element: <Types/>,
+                        }
+                    ]
+                },
+                {
+                    path: 'zips',
+                    children: [
+                        {
+                            index: true,
+                            element: <FeedZip/>
+                        },
+                        {
+                            path: ':id',
+                            element: <ZipPage/>
+                        },
+                        {
+                            path: 'add',
+                            element: <AddZip/>
+                        }
+                    ]
+                },
+                {
+                    path: 'login',
+                    element: <Login/>
+                },
+                {
+                    path: 'register',
+                    element: <Register/>
+                },
+                {
+                    path: 'users/:id',
+                    element: <PublicUserProfile/>
+                },
+                {
+                    path: '*',
+                    element: <Error/>
+                }
+            ]
+        }
+    ])
+};
+
+export default AppRoutes;

@@ -3,7 +3,7 @@ const {getById, update, save, deleteByToken, getByToken} = require("../repositor
 const dotenv = require('dotenv').config();
 
 const generateTokens = (payload) => {
-    const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET, {expiresIn: '30s'});
+    const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET, {expiresIn: '1h'});
     const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, {expiresIn: '30d'});
 
     return {

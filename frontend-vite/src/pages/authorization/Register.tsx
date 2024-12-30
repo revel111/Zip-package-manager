@@ -1,6 +1,9 @@
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import {Box, Button, IconButton, InputAdornment, TextField} from "@mui/material";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
+import {Context} from "../../main.tsx";
+import {useNavigate} from "react-router-dom";
+import {observer} from "mobx-react-lite";
 
 interface RegisterData {
     email: string;
@@ -16,10 +19,17 @@ const Register = () => {
         confirmPassword: '',
         nickname: '',
     });
-
+    const {store} = useContext(Context);
+    const navigate = useNavigate();
     const [errors, setErrors] = useState<Partial<RegisterData>>({});
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+    if (store.isLoading)
+        return <div>Loading...</div>
+
+    if (store.isAuth)
+        navigate("/");
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.target;
@@ -74,19 +84,18 @@ const Register = () => {
         e.preventDefault();
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (validate()) {
-            console.log('Form submitted:', data);
-        }
-    };
+    // const handleSubmit = (e: React.FormEvent) => {
+    //     e.preventDefault();
+    //     if (validate()) {
+    //         console.log('Form submitted:', data);
+    //     }
+    // };
 
     return (
         <Box
             component="form"
             noValidate
             autoComplete="off"
-            onSubmit={handleSubmit}
         >
             <TextField
                 label="Enter your email"
@@ -114,19 +123,20 @@ const Register = () => {
                 helperText={errors.password}
                 slotProps={{
                     input: {
-                    endAdornment: (
-                        <InputAdornment position="end">
-                            <IconButton
-                                aria-label="toggle password visibility"
-                                onClick={handleClickShowPassword}
-                                onMouseDown={handleMouseDownPassword}
-                                edge="end"
-                            >
-                                {showPassword ? <VisibilityOff/> : <Visibility/>}
-                            </IconButton>
-                        </InputAdornment>
-                    ),
-                }}}
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <IconButton
+                                    aria-label="toggle password visibility"
+                                    onClick={handleClickShowPassword}
+                                    onMouseDown={handleMouseDownPassword}
+                                    edge="end"
+                                >
+                                    {showPassword ? <VisibilityOff/> : <Visibility/>}
+                                </IconButton>
+                            </InputAdornment>
+                        ),
+                    }
+                }}
             />
             <TextField
                 label="Confirm your password"
@@ -169,17 +179,22 @@ const Register = () => {
                 error={!!errors.nickname}
                 helperText={errors.nickname}
             />
+
             <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                fullWidth
-                sx={{mt: 2}}
-            >
+                onClick={() => {
+                    if (validate())
+                        store.registration(data.email, data.password, data.nickname, data.confirmPassword)
+                            .then((response) => {
+                                navigate('/');
+                            })
+                            .catch((error) => {
+                                navigate('/');
+                            });
+                }}>
                 Register
             </Button>
         </Box>
     );
 };
 
-export default Register;
+export default observer(Register);

@@ -1,6 +1,9 @@
-import {Box, IconButton, InputAdornment, TextField} from "@mui/material";
+import {Box, Button, IconButton, InputAdornment, TextField} from "@mui/material";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
+import {Context} from "../../main.tsx";
+import {observer} from "mobx-react-lite";
+import {useNavigate} from "react-router-dom";
 
 interface LoginData {
     email: string;
@@ -8,12 +11,19 @@ interface LoginData {
 }
 
 const Login = () => {
+    const navigate = useNavigate();
     const [data, setData] = useState<LoginData>({
         email: '',
         password: '',
     });
-
+    const {store} = useContext(Context);
     const [showPassword, setShowPassword] = useState(false);
+
+    if (store.isLoading)
+        return <div>Loading...</div>
+
+    if (store.isAuth)
+        navigate("/");
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.target;
@@ -31,18 +41,12 @@ const Login = () => {
         e.preventDefault();
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        console.log('Form submitted:', data);
-    };
-
     return (
         <div>
             <Box
                 component="form"
                 noValidate
                 autoComplete="off"
-                onSubmit={handleSubmit}
             >
                 <TextField
                     label="Enter your email"
@@ -81,9 +85,19 @@ const Login = () => {
                         }
                     }}
                 />
+
+                <Button onClick={() => {
+                    store.login(data.email, data.password)
+                        .then((response) => {
+                            navigate('/');
+                        })
+                        .catch((error) => {
+                            navigate('/');
+                        });
+                }}>Login</Button>
             </Box>
         </div>
     );
 };
 
-export default Login;
+export default observer(Login);
