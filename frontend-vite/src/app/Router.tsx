@@ -6,17 +6,16 @@ import ZipPage from "../pages/zip/ZipPage.tsx";
 import AdminPage from "../pages/admin/AdminPage.tsx";
 import FeedZip from "../pages/zip/FeedZip.tsx";
 import {AddZip} from "../pages/zip/AddZip.tsx";
-import Types from "../pages/admin/types/Types.tsx";
+import Types from "../pages/admin/tables/Types.tsx";
 import Login from "../pages/authorization/Login.tsx";
 import Register from "../pages/authorization/Register.tsx";
 import PublicUserProfile from "../pages/user/PublicUserProfile.tsx";
-import {useContext} from "react";
-import {Context} from "../main.tsx";
+import Users from "../pages/admin/tables/Users.tsx";
+import PrivateUserProfile from "../pages/user/PrivateUserProfile.tsx";
+import Zips from "../pages/admin/tables/Zips.tsx";
 
 
 const AppRoutes = () => {
-    const {store} = useContext(Context);
-
     return createBrowserRouter([
         {
             path: '/',
@@ -44,6 +43,14 @@ const AppRoutes = () => {
                         {
                             path: 'types',
                             element: <Types/>,
+                        },
+                        {
+                            path: 'users',
+                            element: <Users/>
+                        },
+                        {
+                            path: 'zips',
+                            element: <Zips/>
                         }
                     ]
                 },
@@ -71,6 +78,10 @@ const AppRoutes = () => {
                 {
                     path: 'register',
                     element: <Register/>
+                },
+                {
+                    path: 'me',
+                    element: <PrivateUserProfile/>
                 },
                 {
                     path: 'users/:id',

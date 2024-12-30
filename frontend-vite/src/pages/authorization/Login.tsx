@@ -1,4 +1,4 @@
-import {Box, Button, IconButton, InputAdornment, TextField} from "@mui/material";
+import {Box, Button, CircularProgress, IconButton, InputAdornment, TextField} from "@mui/material";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 import React, {useContext, useState} from "react";
 import {Context} from "../../main.tsx";
@@ -18,9 +18,10 @@ const Login = () => {
     });
     const {store} = useContext(Context);
     const [showPassword, setShowPassword] = useState(false);
+    const [error, setError] = useState(null);
 
     if (store.isLoading)
-        return <div>Loading...</div>
+        return <CircularProgress />
 
     if (store.isAuth)
         navigate("/");
@@ -39,6 +40,16 @@ const Login = () => {
 
     const handleMouseDownPassword = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+    };
+
+    const handleLogin = () => {
+        store.login(data.email, data.password)
+            .then((response) => {
+                navigate('/');
+            })
+            .catch((error) => {
+                navigate('/');
+            });
     };
 
     return (
@@ -85,16 +96,8 @@ const Login = () => {
                         }
                     }}
                 />
-
-                <Button onClick={() => {
-                    store.login(data.email, data.password)
-                        .then((response) => {
-                            navigate('/');
-                        })
-                        .catch((error) => {
-                            navigate('/');
-                        });
-                }}>Login</Button>
+                {error && <p style={{ color: "red" }}>{error}</p>}
+                <Button onClick={handleLogin}>Login</Button>
             </Box>
         </div>
     );

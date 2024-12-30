@@ -62,6 +62,14 @@ const getAllByUserId = async (id) => {
     return rows;
 };
 
+const getAll = async () => {
+    const connection = await createConnection();
+
+    const [rows] = await connection.query(`SELECT name, user_id, date_of_creation, date_of_modification
+                                           FROM zips`);
+    return rows;
+};
+
 module.exports = {
     countAllZips,
     create,
@@ -69,5 +77,6 @@ module.exports = {
     deleteById,
     getPaginatedByName,
     getAllByName,
-    getAllByUserId
+    getAllByUserId,
+    getAll
 };

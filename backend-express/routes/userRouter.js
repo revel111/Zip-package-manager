@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {getUserById, createUser, login, logout, getAllUsers, refresh} = require('../services/userService');
+const {getUserById, createUser, login, logout, getAllUsers, refresh, deleteUser} = require('../services/userService');
 const {getZipsByUserId} = require("../services/zipService");
 const authHandler = require("../handlers/authHandler");
 
@@ -31,7 +31,7 @@ router.get('/refresh', async (req, res) => {
     res.status(200).send(data);
 });
 
-router.get('/', authHandler, async (req, res) => {
+router.get('/', async (req, res) => {
     res.status(200).send(await getAllUsers());
 });
 
@@ -41,6 +41,11 @@ router.get('/:id', async (req, res) => {
 
 router.get('/:id/zips', async (req, res) => {
     res.status(200).send(await getZipsByUserId(req.params.id));
+});
+
+router.delete('/:id', async (req, res) => {
+    await deleteUser(req.params.id);
+    res.status(200).json();
 });
 
 module.exports = router;

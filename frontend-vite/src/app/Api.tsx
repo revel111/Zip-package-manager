@@ -75,12 +75,15 @@ const api = {
             });
         },
         getTypesById: (id: number) => apiInstance.get(`/zips/${id}/types`),
-        getById: (id: number) => apiInstance.get(`/zips/${id}`)
+        getById: (id: number) => apiInstance.get(`/zips/${id}`),
+        deleteById: (id: number) => apiInstance.delete(`/zips/${id}`),
+        getAll: () => apiInstance.get(`/zips`)
     },
     users: {
         getById: (id: number) => apiInstance.get(`/users/${id}`),
         getAll: () => apiInstance.get(`/users`),
         getZipsByUserId: (id: number) => apiInstance.get(`/users/${id}/zips`),
+        deleteById: (id: number)=> apiInstance.delete(`/users/${id}`),
         login: (email: string, password: string) => apiInstance.post(`/users/login`, {email, password}),
         register: (email: string, password: string, confirmPassword: string, nickname: string) => apiInstance.post(`/users/register`, {
             email,

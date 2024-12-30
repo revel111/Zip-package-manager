@@ -1,8 +1,9 @@
-const {countAllUsers, getById, getByEmail, create, update, getAll} = require('../repositories/userRepository')
+const {countAllUsers, getById, getByEmail, create, update, getAll, deleteById} = require('../repositories/userRepository')
 const {HandlingError} = require("../handlers/errorHandler");
 const bcrypt = require('bcrypt');
 const {generateTokens, saveToken, removeToken, validateToken, findByToken} = require("./jwtService");
-const {saveUserIdRole, getAllRolesByUserId} = require("./roleService");
+const {saveUserIdRole, getAllRolesByUserId, deleteRoleByUserId} = require("./roleService");
+const {deleteTokenById} = require("../repositories/tokenRepository");
 
 const getUserCount = async function () {
     return await countAllUsers();
@@ -127,6 +128,12 @@ const validateUser = async (email, password, nickname, confirmPassword) => {
     }
 };
 
+const deleteUser = async (id) => {
+    await deleteRoleByUserId(id);
+    await deleteById(id);
+    await deleteTokenById(id);
+};
+
 module.exports = {
     getUserCount,
     getUserById,
@@ -134,5 +141,6 @@ module.exports = {
     login,
     logout,
     refresh,
-    getAllUsers
+    getAllUsers,
+    deleteUser
 };

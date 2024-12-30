@@ -41,10 +41,18 @@ const getByToken = async (token) => {
     return rows.length > 0 ? rows[0] : null;
 };
 
+const deleteTokenById = async (userId) => {
+    const connection = await createConnection();
+    await connection.execute(`DELETE
+                              FROM user_tokens
+                              WHERE user_id = ?`, [userId]);
+};
+
 module.exports = {
     getById,
     save,
     update,
     deleteByToken,
-    getByToken
+    getByToken,
+    deleteTokenById
 }

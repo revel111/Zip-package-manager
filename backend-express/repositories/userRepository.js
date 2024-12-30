@@ -9,7 +9,7 @@ const countAllUsers = async function () {
 
 const getAll = async function () {
     const connection = await createConnection();
-    const [rows] = await connection.query(`SELECT id, nickname, email
+    const [rows] = await connection.query(`SELECT id, nickname, email, date_of_creation, date_of_modification
                                            FROM users`)
     return rows;
 };
