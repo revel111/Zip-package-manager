@@ -37,6 +37,7 @@ const AppRoutes = () => {
                     path: 'admin',
                     children: [
                         {
+                            // TODO
                             index: true,
                             element: <AdminPage/>,
                         },
@@ -45,10 +46,12 @@ const AppRoutes = () => {
                             element: <Types/>,
                         },
                         {
+                            // TODO
                             path: 'users',
                             element: <Users/>
                         },
                         {
+                            // TODO
                             path: 'zips',
                             element: <Zips/>
                         }
@@ -62,10 +65,12 @@ const AppRoutes = () => {
                             element: <FeedZip/>
                         },
                         {
+                            // TODO
                             path: ':id',
                             element: <ZipPage/>
                         },
                         {
+                            // TODO
                             path: 'add',
                             element: <AddZip/>
                         }
@@ -80,6 +85,7 @@ const AppRoutes = () => {
                     element: <Register/>
                 },
                 {
+                    // TODO
                     path: 'me',
                     element: <PrivateUserProfile/>
                 },

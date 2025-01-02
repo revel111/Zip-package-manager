@@ -7,9 +7,19 @@ const AdminPage = () => {
     return (
         <div>
             <Button variant="contained" color="primary" onClick={() => {
-                navigate('/types')
+                navigate('/admin/types')
             }}>
                 Go to panel with types
+            </Button>
+            <Button variant="contained" color="primary" onClick={() => {
+                navigate('/admin/users')
+            }}>
+                Go to panel with users
+            </Button>
+            <Button variant="contained" color="primary" onClick={() => {
+                navigate('/admin/zips')
+            }}>
+                Go to panel with zips
             </Button>
         </div>
     )
