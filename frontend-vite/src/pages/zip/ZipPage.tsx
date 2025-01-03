@@ -1,4 +1,4 @@
-import {useParams, useNavigate} from "react-router-dom";
+import {useParams, useNavigate, Link} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {Type} from "./AddZip.tsx";
 import api from "../../app/Api.tsx";
@@ -68,7 +68,6 @@ const ZipPage = () => {
                 <h1>Zip:</h1>
                 {zip?.name} <br/>
                 {zip?.file_name}<br/>
-                {zip?.user_id}<br/>
             </div>
             <div>
                 {types && types.length > 0 ? (
@@ -86,9 +85,7 @@ const ZipPage = () => {
                 {user ? (
                     <>
                         <h1>User:</h1>
-                        {user?.id}<br/>
-                        {user?.nickname}<br/>
-                        {user?.email}<br/>
+                        <Link to={`/users/${user?.id}`}>{user?.nickname}</Link>
                     </>
                 ) : (
                     <div>User account was deleted.</div>

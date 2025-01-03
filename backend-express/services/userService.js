@@ -1,4 +1,12 @@
-const {countAllUsers, getById, getByEmail, create, update, getAll, deleteById} = require('../repositories/userRepository')
+const {
+    countAllUsers,
+    getById,
+    getByEmail,
+    create,
+    update,
+    getAll,
+    deleteById, changePassword
+} = require('../repositories/userRepository')
 const {HandlingError} = require("../handlers/errorHandler");
 const bcrypt = require('bcrypt');
 const {generateTokens, saveToken, removeToken, validateToken, findByToken} = require("./jwtService");
@@ -36,6 +44,7 @@ const createUser = async (email, password, nickname, confirmPassword) => {
         user: {
             id: user.id,
             email: user.email,
+            nickname: user.nickname,
             role: role
         }
     };
@@ -65,6 +74,7 @@ const login = async (email, password) => {
         user: {
             id: user.id,
             email: user.email,
+            nickname: user.nickname,
             roles: roles
         }
     };
@@ -95,18 +105,29 @@ const refresh = async (refreshToken) => {
         user: {
             id: user.id,
             email: user.email,
+            nickname: user.nickname,
             roles: roles
         }
     };
 };
 
-const validateUser = async (email, password, nickname, confirmPassword) => {
-    if (!email || !password || !nickname)
-        throw new HandlingError(400, 'Wrong data was passed.');
+const deleteUser = async (id) => {
+    await deleteRoleByUserId(id);
+    await deleteById(id);
+    await deleteTokenById(id);
+};
 
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailPattern.test(email)) {
-        throw new HandlingError(400, 'Invalid email address.');
+const validateUser = async (email, password, nickname, confirmPassword) => {
+    testEmail(email);
+
+    testPassword(password, confirmPassword);
+
+    testNickname(nickname);
+};
+
+const testPassword = (password, confirmPassword) => {
+    if (!password) {
+        throw new HandlingError(400, 'Invalid password.');
     }
 
     const passwordPattern = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
@@ -115,23 +136,53 @@ const validateUser = async (email, password, nickname, confirmPassword) => {
     }
 
     if (confirmPassword !== password) {
-        throw new HandlingError(400, 'Passwords do not match.');
+        throw new HandlingError(400, 'Password does not match.');
+    }
+};
+
+const testEmail = (email) => {
+    if (!email) {
+        throw new HandlingError(400, 'Invalid email address.');
+    }
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+        throw new HandlingError(400, 'Invalid email address.');
+    }
+};
+
+const testNickname = (nickname) => {
+    if (!nickname) {
+        throw new HandlingError(400, 'Nickname should be 2 - 10 symbols long.');
     }
 
     nickname = nickname.trim();
     if (nickname.length < 2 || nickname.length > 10) {
         throw new HandlingError(400, 'Invalid nickname.');
     }
+}
 
-    if (await getByEmail(email)) {
-        throw new HandlingError(409, 'Email is already in use.');
-    }
+const updateUser = async (ogEmail, email, nickname) => {
+    if (ogEmail !== email)
+        testEmail(email);
+
+    testNickname(nickname);
+    await update(ogEmail, email, nickname);
 };
 
-const deleteUser = async (id) => {
-    await deleteRoleByUserId(id);
-    await deleteById(id);
-    await deleteTokenById(id);
+const changeUserPassword = async (email, ogPassword, changedPassword, confirmPassword) => {
+    const user = await getByEmail(email);
+
+    if (!user)
+        throw new HandlingError(401, 'Wrong email.');
+
+    if (!await bcrypt.compare(ogPassword, user.password))
+        throw new HandlingError(401, 'Wrong password.');
+
+    testPassword(changedPassword, confirmPassword);
+
+    changedPassword = await hashPassword(changedPassword);
+    await changePassword(email, changedPassword);
 };
 
 module.exports = {
@@ -142,5 +193,7 @@ module.exports = {
     logout,
     refresh,
     getAllUsers,
-    deleteUser
+    deleteUser,
+    updateUser,
+    changeUserPassword
 };

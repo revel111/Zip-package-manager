@@ -50,7 +50,7 @@ export default class Store {
 
     async logout() {
         try {
-            const response = await api.users.logout();
+            await api.users.logout();
             localStorage.removeItem("token");
             this.setAuth(false);
             this.setUser({} as IUser);

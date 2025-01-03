@@ -39,14 +39,21 @@ const deleteById = async (id) => {
                               WHERE id = ?`, [id]);
 };
 
-const update = async (id, password, email, nickname) => {
+const update = async (ogEmail, email, nickname) => {
     const connection = await createConnection();
 
     await connection.execute(`UPDATE users
                               SET nickname = ?,
-                                  email    = ?,
-                                  password = ?
-                              WHERE id = ?`, [nickname, email, password, id]);
+                                  email    = ?
+                              WHERE email = ?`, [nickname, email, ogEmail]);
+};
+
+const changePassword = async (email, password) => {
+    const connection = await createConnection();
+
+    await connection.execute(`UPDATE users
+                              SET password = ?
+                              WHERE email = ?`, [password, email]);
 };
 
 const create = async (email, password, nickname) => {
@@ -65,5 +72,6 @@ module.exports = {
     deleteById,
     update,
     create,
-    getAll
+    getAll,
+    changePassword
 }

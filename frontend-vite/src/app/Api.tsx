@@ -83,7 +83,7 @@ const api = {
         getById: (id: number) => apiInstance.get(`/users/${id}`),
         getAll: () => apiInstance.get(`/users`),
         getZipsByUserId: (id: number) => apiInstance.get(`/users/${id}/zips`),
-        deleteById: (id: number)=> apiInstance.delete(`/users/${id}`),
+        deleteById: (id: number) => apiInstance.delete(`/users/${id}`),
         login: (email: string, password: string) => apiInstance.post(`/users/login`, {email, password}),
         register: (email: string, password: string, confirmPassword: string, nickname: string) => apiInstance.post(`/users/register`, {
             email,
@@ -92,7 +92,17 @@ const api = {
             confirmPassword
         }),
         logout: () => apiInstance.post(`/users/logout`),
-
+        changePassword: (email: string, ogPassword: string, changedPassword: string, confirmPassword: string) => apiInstance.put(`/users/change-password`, {
+            email,
+            ogPassword,
+            changedPassword,
+            confirmPassword
+        }),
+        update: (ogEmail: string, nickname: string, email: string) => apiInstance.put(`/users`, {
+            ogEmail,
+            nickname,
+            email
+        }),
     },
     index: {
         fetchStats: () => apiInstance.get(`/`),

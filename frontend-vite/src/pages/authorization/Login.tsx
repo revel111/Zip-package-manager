@@ -42,8 +42,8 @@ const Login = () => {
         e.preventDefault();
     };
 
-    const handleLogin = () => {
-        store.login(data.email, data.password)
+    const handleLogin = async () => {
+        await store.login(data.email, data.password)
             .then((response) => {
                 navigate('/');
             })

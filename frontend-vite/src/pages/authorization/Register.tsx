@@ -1,5 +1,5 @@
 import React, {useContext, useState} from "react";
-import {Box, Button, IconButton, InputAdornment, TextField} from "@mui/material";
+import {Box, Button, CircularProgress, IconButton, InputAdornment, TextField, Typography} from "@mui/material";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 import {Context} from "../../main.tsx";
 import {useNavigate} from "react-router-dom";
@@ -26,7 +26,7 @@ const Register = () => {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     if (store.isLoading)
-        return <div>Loading...</div>
+        return <CircularProgress/>
 
     if (store.isAuth)
         navigate("/");
@@ -83,13 +83,6 @@ const Register = () => {
     const handleMouseDownPassword = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
     };
-
-    // const handleSubmit = (e: React.FormEvent) => {
-    //     e.preventDefault();
-    //     if (validate()) {
-    //         console.log('Form submitted:', data);
-    //     }
-    // };
 
     return (
         <Box
@@ -181,9 +174,9 @@ const Register = () => {
             />
 
             <Button
-                onClick={() => {
+                onClick={async () => {
                     if (validate())
-                        store.registration(data.email, data.password, data.nickname, data.confirmPassword)
+                        await store.registration(data.email, data.password, data.nickname, data.confirmPassword)
                             .then((response) => {
                                 navigate('/');
                             })
@@ -193,6 +186,25 @@ const Register = () => {
                 }}>
                 Register
             </Button>
+
+            <Box mt={3}>
+                <Typography variant="body2">
+                    <strong>Email:</strong> Must be a valid email address (e.g., user@example.com).
+                </Typography>
+                <Typography variant="body2">
+                    <strong>Password:</strong>
+                    <ul>
+                        <li>At least 8 characters long.</li>
+                        <li>At least one uppercase letter.</li>
+                        <li>At least one lowercase letter.</li>
+                        <li>At least one number.</li>
+                        <li>At least one special character (e.g., #?!@$%^&*-).</li>
+                    </ul>
+                </Typography>
+                <Typography variant="body2">
+                    <strong>Nickname:</strong> Must be 2 to 10 characters long.
+                </Typography>
+            </Box>
         </Box>
     );
 };
