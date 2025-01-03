@@ -13,9 +13,14 @@ const Header = () => {
     const {store} = useContext(Context);
     const navigate = useNavigate();
 
-    useEffect(async () => {
-        if (localStorage.getItem('token'))
-            await store.checkAuth();
+    useEffect(() => {
+        const authenticate = async () => {
+            if (localStorage.getItem('token')) {
+                await store.checkAuth();
+            }
+        };
+
+        authenticate();
     }, [store]);
 
     return (

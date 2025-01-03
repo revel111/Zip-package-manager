@@ -4,6 +4,7 @@ import React, {useContext, useState} from "react";
 import {Context} from "../../main.tsx";
 import {observer} from "mobx-react-lite";
 import {useNavigate} from "react-router-dom";
+import CustomSnackBar from "../../components/textfields/CustomSnackBar.tsx";
 
 interface LoginData {
     email: string;
@@ -18,7 +19,19 @@ const Login = () => {
     });
     const {store} = useContext(Context);
     const [showPassword, setShowPassword] = useState(false);
-    const [error, setError] = useState(null);
+    const [snackbar, setSnackbar] = useState({
+        open: false,
+        message: '',
+        severity: 'success' as 'success' | 'info' | 'warning' | 'error',
+    });
+
+    const showSnackbar = (message: string, severity: 'success' | 'info' | 'warning' | 'error') => {
+        setSnackbar({ open: true, message, severity });
+    };
+
+    const handleCloseSnackbar = () => {
+        setSnackbar((prev) => ({ ...prev, open: false }));
+    };
 
     if (store.isLoading)
         return <CircularProgress />
@@ -48,7 +61,7 @@ const Login = () => {
                 navigate('/');
             })
             .catch((error) => {
-                navigate('/');
+                showSnackbar('Wrong email or password', 'error');
             });
     };
 
@@ -96,9 +109,14 @@ const Login = () => {
                         }
                     }}
                 />
-                {error && <p style={{ color: "red" }}>{error}</p>}
                 <Button onClick={handleLogin}>Login</Button>
             </Box>
+            <CustomSnackBar
+                open={snackbar.open}
+                message={snackbar.message}
+                severity={snackbar.severity}
+                onClose={handleCloseSnackbar}
+            />
         </div>
     );
 };

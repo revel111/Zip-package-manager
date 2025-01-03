@@ -13,7 +13,7 @@ const {
 const {getZipsByUserId} = require("../services/zipService");
 const authHandler = require("../handlers/authHandler");
 
-router.post('/register', authHandler, async (req, res) => {
+router.post('/register', async (req, res) => {
     const {email, password, nickname, confirmPassword} = req.body;
     const data = await createUser(email, password, nickname, confirmPassword);
     res.cookie('refreshToken', data.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true});
@@ -57,14 +57,16 @@ router.delete('/:id', authHandler, async (req, res) => {
     res.status(200).json();
 });
 
-router.put('/change-password', authHandler, async (req, res) => {
-    const {email, ogPassword, changedPassword, confirmPassword} = req.body;
-    res.status(200).send(await changeUserPassword(email, ogPassword, changedPassword, confirmPassword));
+router.put('/', authHandler, async (req, res) => {
+    const {nickname, email} = req.body;
+    const ogEmail = req.user.email;
+    res.status(200).send(await updateUser(ogEmail, email, nickname));
 });
 
-router.put('/', authHandler, async (req, res) => {
-    const {ogEmail, nickname, email} = req.body;
-    res.status(200).send(await updateUser(ogEmail, email, nickname));
+router.put('/change-password', authHandler, async (req, res) => {
+    const {ogPassword, changedPassword, confirmPassword} = req.body;
+    const email = req.user.email;
+    res.status(200).send(await changeUserPassword(email, ogPassword, changedPassword, confirmPassword));
 });
 
 module.exports = router;

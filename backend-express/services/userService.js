@@ -34,6 +34,10 @@ const createUser = async (email, password, nickname, confirmPassword) => {
     await validateUser(email, password, nickname, confirmPassword);
     password = await hashPassword(password);
 
+    const existingUser = await getByEmail(email);
+    if (existingUser)
+        throw new HandlingError(409, "Email was registered.");
+
     const user = await create(email, password, nickname);
     const role = await saveUserIdRole(user.id, 'user');
     const tokens = generateTokens({id: user.id, email: email});
@@ -163,8 +167,10 @@ const testNickname = (nickname) => {
 }
 
 const updateUser = async (ogEmail, email, nickname) => {
-    if (ogEmail !== email)
-        testEmail(email);
+    if (ogEmail !== email && await getByEmail(email))
+        throw new HandlingError(409, "Email was registered.");
+
+    testEmail(email);
 
     testNickname(nickname);
     await update(ogEmail, email, nickname);

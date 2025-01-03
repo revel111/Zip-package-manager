@@ -92,14 +92,12 @@ const api = {
             confirmPassword
         }),
         logout: () => apiInstance.post(`/users/logout`),
-        changePassword: (email: string, ogPassword: string, changedPassword: string, confirmPassword: string) => apiInstance.put(`/users/change-password`, {
-            email,
+        changePassword: (ogPassword: string, changedPassword: string, confirmPassword: string) => apiInstance.put(`/users/change-password`, {
             ogPassword,
             changedPassword,
             confirmPassword
         }),
-        update: (ogEmail: string, nickname: string, email: string) => apiInstance.put(`/users`, {
-            ogEmail,
+        update: (nickname: string, email: string) => apiInstance.put(`/users`, {
             nickname,
             email
         }),

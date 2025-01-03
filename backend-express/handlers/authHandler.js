@@ -1,5 +1,5 @@
 const {HandlingError} = require("./errorHandler");
-const {validateAccessToken} = require("../services/jwtService");
+const {validateToken} = require("../services/jwtService");
 
 module.exports = (req, res, next) => {
     try {
@@ -11,7 +11,7 @@ module.exports = (req, res, next) => {
         if (!accessToken)
             return next(new HandlingError(401, 'Unauthorized.'));
 
-        const data = validateAccessToken(accessToken, 'accessToken');
+        const data = validateToken(accessToken, 'accessToken');
         if (!data)
             return next(new HandlingError(401, 'Unauthorized.'));
 

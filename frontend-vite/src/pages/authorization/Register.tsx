@@ -1,9 +1,12 @@
 import React, {useContext, useState} from "react";
-import {Box, Button, CircularProgress, IconButton, InputAdornment, TextField, Typography} from "@mui/material";
-import {Visibility, VisibilityOff} from "@mui/icons-material";
+import {Alert, Box, Button, CircularProgress, Snackbar, TextField} from "@mui/material";
 import {Context} from "../../main.tsx";
 import {useNavigate} from "react-router-dom";
 import {observer} from "mobx-react-lite";
+import PasswordRules from "../../components/rules/PasswordRules.tsx";
+import EmailNicknameRules from "../../components/rules/EmailNicknameRules.tsx";
+import PasswordField from "../../components/textfields/PasswordTextField.tsx";
+import CustomSnackBar from "../../components/textfields/CustomSnackBar.tsx";
 
 interface RegisterData {
     email: string;
@@ -22,8 +25,19 @@ const Register = () => {
     const {store} = useContext(Context);
     const navigate = useNavigate();
     const [errors, setErrors] = useState<Partial<RegisterData>>({});
-    const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [snackbar, setSnackbar] = useState({
+        open: false,
+        message: '',
+        severity: 'success' as 'success' | 'info' | 'warning' | 'error',
+    });
+
+    const showSnackbar = (message: string, severity: 'success' | 'info' | 'warning' | 'error') => {
+        setSnackbar({ open: true, message, severity });
+    };
+
+    const handleCloseSnackbar = () => {
+        setSnackbar((prev) => ({ ...prev, open: false }));
+    };
 
     if (store.isLoading)
         return <CircularProgress/>
@@ -53,7 +67,7 @@ const Register = () => {
         if (!data.password) {
             newErrors.password = 'Password is required';
         } else if (!passwordPattern.test(data.password)) {
-            newErrors.password = 'Password must be at least 6 characters';
+            newErrors.password = 'Password must be at least 8 characters';
         }
 
         if (!data.confirmPassword) {
@@ -70,18 +84,6 @@ const Register = () => {
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
-    };
-
-    const handleClickShowPassword = () => {
-        setShowPassword((prev) => !prev);
-    };
-
-    const handleClickShowConfirmPassword = () => {
-        setShowConfirmPassword((prev) => !prev);
-    };
-
-    const handleMouseDownPassword = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
     };
 
     return (
@@ -102,63 +104,21 @@ const Register = () => {
                 error={!!errors.email}
                 helperText={errors.email}
             />
-            <TextField
+            <PasswordField
                 label="Enter your password"
-                variant="outlined"
-                type={showPassword ? 'text' : 'password'}
                 name="password"
                 value={data.password}
                 onChange={handleChange}
-                fullWidth
-                margin="normal"
-                required
                 error={!!errors.password}
                 helperText={errors.password}
-                slotProps={{
-                    input: {
-                        endAdornment: (
-                            <InputAdornment position="end">
-                                <IconButton
-                                    aria-label="toggle password visibility"
-                                    onClick={handleClickShowPassword}
-                                    onMouseDown={handleMouseDownPassword}
-                                    edge="end"
-                                >
-                                    {showPassword ? <VisibilityOff/> : <Visibility/>}
-                                </IconButton>
-                            </InputAdornment>
-                        ),
-                    }
-                }}
             />
-            <TextField
+            <PasswordField
                 label="Confirm your password"
-                variant="outlined"
-                type={showConfirmPassword ? 'text' : 'password'}
                 name="confirmPassword"
                 value={data.confirmPassword}
                 onChange={handleChange}
-                fullWidth
-                margin="normal"
-                required
                 error={!!errors.confirmPassword}
                 helperText={errors.confirmPassword}
-                slotProps={{
-                    input: {
-                        endAdornment: (
-                            <InputAdornment position="end">
-                                <IconButton
-                                    aria-label="toggle confirm password visibility"
-                                    onClick={handleClickShowConfirmPassword}
-                                    onMouseDown={handleMouseDownPassword}
-                                    edge="end"
-                                >
-                                    {showConfirmPassword ? <VisibilityOff/> : <Visibility/>}
-                                </IconButton>
-                            </InputAdornment>
-                        ),
-                    }
-                }}
             />
             <TextField
                 label="Enter your nickname"
@@ -178,33 +138,27 @@ const Register = () => {
                     if (validate())
                         await store.registration(data.email, data.password, data.nickname, data.confirmPassword)
                             .then((response) => {
-                                navigate('/');
+                                showSnackbar('Successfully registered!', 'success');
+                                navigate('/login');
                             })
                             .catch((error) => {
-                                navigate('/');
+                                showSnackbar('Email is already in use!', 'error');
                             });
                 }}>
                 Register
             </Button>
 
             <Box mt={3}>
-                <Typography variant="body2">
-                    <strong>Email:</strong> Must be a valid email address (e.g., user@example.com).
-                </Typography>
-                <Typography variant="body2">
-                    <strong>Password:</strong>
-                    <ul>
-                        <li>At least 8 characters long.</li>
-                        <li>At least one uppercase letter.</li>
-                        <li>At least one lowercase letter.</li>
-                        <li>At least one number.</li>
-                        <li>At least one special character (e.g., #?!@$%^&*-).</li>
-                    </ul>
-                </Typography>
-                <Typography variant="body2">
-                    <strong>Nickname:</strong> Must be 2 to 10 characters long.
-                </Typography>
+                <EmailNicknameRules/>
+                <PasswordRules/>
             </Box>
+
+            <CustomSnackBar
+                open={snackbar.open}
+                message={snackbar.message}
+                severity={snackbar.severity}
+                onClose={handleCloseSnackbar}
+            />
         </Box>
     );
 };

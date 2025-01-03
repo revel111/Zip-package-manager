@@ -1,32 +1,81 @@
-import React, {useContext, useEffect, useState} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import {Context} from "../../main.tsx";
 import {useNavigate} from "react-router-dom";
-import {Alert, Avatar, Box, Button, Snackbar, TextField, Typography} from "@mui/material";
+import {
+    Avatar,
+    Box,
+    Button,
+    Dialog, DialogActions,
+    DialogContent,
+    DialogTitle,
+    TextField,
+    Typography
+} from "@mui/material";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import api from "../../app/Api.tsx";
+import PasswordRules from "../../components/rules/PasswordRules.tsx";
+import PasswordField from "../../components/textfields/PasswordTextField.tsx";
+import CustomSnackBar from "../../components/textfields/CustomSnackBar.tsx";
+
+interface ChangePassword {
+    oldPassword: string;
+    newPassword: string;
+    confirmPassword: string;
+}
+
+interface UpdateUser {
+    email: string;
+    nickname: string;
+}
 
 const PrivateUserProfile = () => {
     const {store} = useContext(Context);
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<UpdateUser>({
         email: store.user.email || '',
         nickname: store.user.nickname || '',
     });
     const navigate = useNavigate();
-    const [snackbar, setSnackbar] = useState({open: false, message: '', severity: ''});
+    const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
+    const [passwordData, setPasswordData] = useState<ChangePassword>(
+        {
+            oldPassword: '',
+            newPassword: '',
+            confirmPassword: ''
+        });
+    const [userErrors, setUserErrors] = useState<Partial<UpdateUser>>({});
+    const [passwordErrors, setPasswordErrors] = useState<Partial<ChangePassword>>({});
+    const [snackbar, setSnackbar] = useState({
+        open: false,
+        message: '',
+        severity: 'success' as 'success' | 'info' | 'warning' | 'error',
+    });
 
-    useEffect(async () => {
-        if (localStorage.getItem('token')) {
-            await store.checkAuth();
-            if (!store.user) {
-                navigate("/");
+    const showSnackbar = (message: string, severity: 'success' | 'info' | 'warning' | 'error') => {
+        setSnackbar({ open: true, message, severity });
+    };
+
+    const handleCloseSnackbar = () => {
+        setSnackbar((prev) => ({ ...prev, open: false }));
+    };
+
+    useEffect(() => {
+        const verifyAuth = async () => {
+            if (localStorage.getItem('token')) {
+                await store.checkAuth();
+                if (!store.user) {
+                    navigate("/");
+                } else {
+                    setFormData({
+                        email: store.user.email || '',
+                        nickname: store.user.nickname || '',
+                    });
+                }
             } else {
-                setFormData({
-                    email: store.user.email || '',
-                    nickname: store.user.nickname || '',
-                });
+                navigate('/');
             }
-        } else
-            navigate('/');
+        };
+
+        verifyAuth();
     }, [navigate, store]);
 
     const handleChange = (e) => {
@@ -37,21 +86,78 @@ const PrivateUserProfile = () => {
         });
     };
 
-    const handleSubmit = async () => {
-        try {
-            await api.users.update(store.user.email, formData.nickname, formData.email);
-            setSnackbar({open: true, message: 'Profile updated successfully!', severity: 'success'});
-        } catch (error) {
-            if (error.response && error.response.data && error.response.data.error) {
-                setSnackbar({ open: true, message: error.response.data.error, severity: 'error' });
-            } else {
-                setSnackbar({ open: true, message: 'An unexpected error occurred.', severity: 'error' });
-            }
-        }
+    const handlePasswordChange = (e) => {
+        const {name, value} = e.target;
+        setPasswordData({
+            ...passwordData,
+            [name]: value,
+        });
     };
 
-    const handleCloseSnackbar = () => {
-        setSnackbar({...snackbar, open: false});
+    const handleSubmit = async () => {
+        if (validate())
+            try {
+                await api.users.update(formData.nickname, formData.email);
+                showSnackbar('Profile updated successfully!', 'success');
+            } catch (error) {
+                showSnackbar('Email is already in use.', 'error');
+            }
+    };
+
+    const validate = (): boolean => {
+        const newErrors: Partial<UpdateUser> = {};
+
+        if (!formData.nickname) {
+            newErrors.nickname = 'Nickname is required';
+        } else if (formData.nickname.length < 2 || formData.nickname.length > 10) {
+            newErrors.nickname = 'Nickname should be 2 to 10 symbols.';
+        }
+
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!formData.email) {
+            newErrors.email = 'Email is required';
+        } else if (!emailPattern.test(formData.email)) {
+            newErrors.email = 'Email is invalid';
+        }
+
+        setUserErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const handlePasswordSubmit = async () => {
+        if (validatePasswords())
+            try {
+                await api.users.changePassword(passwordData.oldPassword, passwordData.newPassword, passwordData.confirmPassword);
+                showSnackbar('Password changed successfully!', 'success');
+                setPasswordDialogOpen(false);
+                setPasswordData({oldPassword: '', newPassword: '', confirmPassword: ''});
+            } catch (error) {
+                showSnackbar('Wrong data was provided!', 'error');
+            }
+    };
+
+    const validatePasswords = (): boolean => {
+        const newErrors: Partial<ChangePassword> = {};
+
+        const passwordPattern = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
+        if (!passwordData.newPassword) {
+            newErrors.newPassword = 'Password is required';
+        } else if (!passwordPattern.test(passwordData.newPassword)) {
+            newErrors.newPassword = 'Password must be at least 8 characters';
+        }
+
+        if (!passwordData.oldPassword) {
+            newErrors.oldPassword = 'Password is required';
+        }
+
+        if (!passwordData.confirmPassword) {
+            newErrors.confirmPassword = 'Please confirm your password';
+        } else if (passwordData.newPassword !== passwordData.confirmPassword) {
+            newErrors.confirmPassword = 'Passwords do not match';
+        }
+
+        setPasswordErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
     };
 
     return (
@@ -76,6 +182,8 @@ const PrivateUserProfile = () => {
                 onChange={handleChange}
                 fullWidth
                 variant="outlined"
+                error={!!userErrors.email}
+                helperText={userErrors.email}
             />
             <TextField
                 label="Nickname"
@@ -84,6 +192,8 @@ const PrivateUserProfile = () => {
                 onChange={handleChange}
                 fullWidth
                 variant="outlined"
+                error={!!userErrors.nickname}
+                helperText={userErrors.nickname}
             />
             <Button variant="contained" onClick={handleSubmit} fullWidth>
                 Save Changes
@@ -98,20 +208,54 @@ const PrivateUserProfile = () => {
                 </Typography>
             </Box>
 
-            <Snackbar
+            <Button variant="outlined" onClick={() => setPasswordDialogOpen(true)} fullWidth>
+                Change Password
+            </Button>
+
+            <Dialog open={passwordDialogOpen} onClose={() => setPasswordDialogOpen(false)}>
+                <DialogTitle>Change Password</DialogTitle>
+                <DialogContent>
+                    <PasswordField
+                        label="Enter your password"
+                        name="oldPassword"
+                        value={passwordData.oldPassword}
+                        onChange={handlePasswordChange}
+                        error={!!passwordErrors.oldPassword}
+                        helperText={passwordErrors.oldPassword}
+                    />
+                    <PasswordField
+                        label="Enter your new password"
+                        name="newPassword"
+                        value={passwordData.newPassword}
+                        onChange={handlePasswordChange}
+                        error={!!passwordErrors.newPassword}
+                        helperText={passwordErrors.newPassword}
+                    />
+                    <PasswordField
+                        label="Confirm your password"
+                        name="confirmPassword"
+                        value={passwordData.confirmPassword}
+                        onChange={handlePasswordChange}
+                        error={!!passwordErrors.confirmPassword}
+                        helperText={passwordErrors.confirmPassword}
+                    />
+                </DialogContent>
+                <Box mt={3}>
+                    <PasswordRules/>
+                </Box>
+
+                <DialogActions>
+                    <Button onClick={() => setPasswordDialogOpen(false)}>Cancel</Button>
+                    <Button onClick={handlePasswordSubmit} variant="contained">Submit</Button>
+                </DialogActions>
+            </Dialog>
+
+            <CustomSnackBar
                 open={snackbar.open}
-                autoHideDuration={6000}
+                message={snackbar.message}
+                severity={snackbar.severity}
                 onClose={handleCloseSnackbar}
-                anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
-            >
-                <Alert
-                    onClose={handleCloseSnackbar}
-                    severity={snackbar.severity}
-                    sx={{ width: '100%' }}
-                >
-                    {snackbar.message}
-                </Alert>
-            </Snackbar>
+            />
         </Box>
     );
 };
