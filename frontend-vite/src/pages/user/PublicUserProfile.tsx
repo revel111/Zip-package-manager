@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 import api from "../../app/Api.tsx";
 import {Link, useNavigate, useParams} from "react-router-dom";
 import {User} from "../zip/ZipPage.tsx";
-import {Zip} from "../../components/SearchBar.tsx";
+import {Zip} from "../../components/home/SearchBar.tsx";
 
 const PublicUserProfile = () => {
     const navigate = useNavigate();
@@ -11,21 +11,29 @@ const PublicUserProfile = () => {
     const {id} = useParams();
 
     useEffect(() => {
-        api.users.getById(Number(id))
-            .then(r => setProfile(r.data))
-            .catch((err: Error) => {
-                console.error(`Error fetching user: ${err}`);
-                navigate('/error');
-                return;
-            });
+        const fetch = async () => {
+            await api.users.getById(Number(id))
+                .then(r => setProfile(r.data))
+                .catch((err: Error) => {
+                    console.error(`Error fetching user: ${err}`);
+                    navigate('/error');
+                    return;
+                });
+        }
+
+        fetch();
     }, [id, navigate]);
 
     useEffect(() => {
-        api.users.getZipsByUserId(Number(id))
-            .then(r => setZips(r.data))
-            .catch((err: Error) => {
-                console.error(`Error fetching zips: ${err}`);
-            });
+        const fetch = async () => {
+            await api.users.getZipsByUserId(Number(id))
+                .then(r => setZips(r.data))
+                .catch((err: Error) => {
+                    console.error(`Error fetching zips: ${err}`);
+                });
+        };
+
+        fetch();
     }, [id]);
 
     return (

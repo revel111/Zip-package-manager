@@ -16,6 +16,7 @@ import api from "../../app/Api.tsx";
 import PasswordRules from "../../components/rules/PasswordRules.tsx";
 import PasswordField from "../../components/textfields/PasswordTextField.tsx";
 import CustomSnackBar from "../../components/textfields/CustomSnackBar.tsx";
+import ConfirmDialog from "../../components/dialog/ConfirmDialog.tsx";
 
 interface ChangePassword {
     oldPassword: string;
@@ -49,13 +50,15 @@ const PrivateUserProfile = () => {
         message: '',
         severity: 'success' as 'success' | 'info' | 'warning' | 'error',
     });
+    const [passwordSubmitOpen, setPasswordSubmitOpen] = useState(false);
+    const [userDataSubmitOpen, setUserDataSubmitOpen] = useState(false);
 
     const showSnackbar = (message: string, severity: 'success' | 'info' | 'warning' | 'error') => {
-        setSnackbar({ open: true, message, severity });
+        setSnackbar({open: true, message, severity});
     };
 
     const handleCloseSnackbar = () => {
-        setSnackbar((prev) => ({ ...prev, open: false }));
+        setSnackbar((prev) => ({...prev, open: false}));
     };
 
     useEffect(() => {
@@ -195,9 +198,19 @@ const PrivateUserProfile = () => {
                 error={!!userErrors.nickname}
                 helperText={userErrors.nickname}
             />
-            <Button variant="contained" onClick={handleSubmit} fullWidth>
+            <Button variant="contained" onClick={() => setUserDataSubmitOpen(true)} fullWidth>
                 Save Changes
             </Button>
+
+            <ConfirmDialog
+                open={userDataSubmitOpen}
+                message={"Do you really want to change your data?"}
+                onConfirm={() => {
+                    setUserDataSubmitOpen(false);
+                    handleSubmit();
+                }}
+                onCancel={() => setUserDataSubmitOpen(false)}
+            />
 
             <Box mt={3}>
                 <Typography variant="body2">
@@ -246,8 +259,18 @@ const PrivateUserProfile = () => {
 
                 <DialogActions>
                     <Button onClick={() => setPasswordDialogOpen(false)}>Cancel</Button>
-                    <Button onClick={handlePasswordSubmit} variant="contained">Submit</Button>
+                    <Button onClick={() => setPasswordSubmitOpen(true)} variant="contained">Change</Button>
                 </DialogActions>
+
+                <ConfirmDialog
+                    open={passwordSubmitOpen}
+                    message={"Do you really want to change your password?"}
+                    onConfirm={() => {
+                        setPasswordSubmitOpen(false);
+                        handlePasswordSubmit();
+                    }}
+                    onCancel={() => setPasswordSubmitOpen(false)}
+                ></ConfirmDialog>
             </Dialog>
 
             <CustomSnackBar

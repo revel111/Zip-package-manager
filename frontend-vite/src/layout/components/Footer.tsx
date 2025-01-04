@@ -1,6 +1,33 @@
+import {Box, Typography, Link} from "@mui/material";
+
 const Footer = () => {
     return (
-        <div>Made by revel111 at the end of 2024 and beginning of 2025</div>
+        <Box
+            sx={{
+                mt: 4,
+                py: 2,
+                px: 3,
+                textAlign: "center",
+                justifyContent: "center",
+                alignItems: "center",
+                bgcolor: "background.default",
+                color: "text.secondary",
+                boxShadow: 1,
+                mb: 2
+            }}
+        >
+            <Typography variant="body2" sx={{fontSize: "0.875rem"}}>
+                Made by {""}
+                <Link
+                    href="https://github.com/revel111"
+                    target="_blank"
+                    rel="noopener"
+                    sx={{textDecoration: "none", color: "primary.main", fontWeight: "bold"}}>
+                    revel111
+                </Link>
+                {""} at the end of 2024 and the beginning of 2025.
+            </Typography>
+        </Box>
     );
 };
 

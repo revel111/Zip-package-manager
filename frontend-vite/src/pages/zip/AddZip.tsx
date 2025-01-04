@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
 import api from "../../app/Api.tsx";
+import {Box} from "@mui/material";
 
 export interface Type {
     id: number;
@@ -81,39 +82,9 @@ const AddZip: React.FC = () => {
         <div>
             <h1>Upload a new zip file</h1>
 
-            <form onSubmit={Upload}>
-                <input
-                    type="file"
-                    id="zip_upload"
-                    accept=".zip"
-                    onChange={ChangeZip}
-                />
+            <Box>
 
-                <div>
-                    <h1>Choose types</h1>
-                    {types.map((type) => (
-                        <label key={type.id}>
-                            <input
-                                type="checkbox"
-                                value={type.id}
-                                onChange={changeType}
-                            />
-                            {type.name}
-                        </label>
-                    ))}
-                </div>
-
-                <div>
-                    <label htmlFor="customName">Enter the name of upload</label>
-                    <input
-                        id="customName"
-                        type="text"
-                        name="customName"
-                        onChange={changeName}
-                    />
-                </div>
-                <button type="submit">Upload</button>
-            </form>
+            </Box>
         </div>
     );
 };

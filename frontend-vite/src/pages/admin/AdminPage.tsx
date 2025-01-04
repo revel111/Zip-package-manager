@@ -1,28 +1,21 @@
-import {Button} from "@mui/material";
-import {useNavigate} from "react-router-dom";
+import {Box} from "@mui/material";
+import AdminEntry from "../../components/enrties/AdminEntry.tsx";
+import {Dashboard, People} from "@mui/icons-material";
+import FolderZipIcon from "@mui/icons-material/FolderZip";
 
 const AdminPage = () => {
-    const navigate = useNavigate();
-
     return (
-        <div>
-            <Button variant="contained" color="primary" onClick={() => {
-                navigate('/admin/types')
-            }}>
-                Go to panel with types
-            </Button>
-            <Button variant="contained" color="primary" onClick={() => {
-                navigate('/admin/users')
-            }}>
-                Go to panel with users
-            </Button>
-            <Button variant="contained" color="primary" onClick={() => {
-                navigate('/admin/zips')
-            }}>
-                Go to panel with zips
-            </Button>
-        </div>
-    )
+        <Box sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+            alignItems: "center"
+        }}>
+            <AdminEntry link={'/admin/zips'} text={'zips'} icon={<FolderZipIcon/>}/>
+            <AdminEntry link={'/admin/users'} text={'users'} icon={<People/>}/>
+            <AdminEntry link={'/admin/types'} text={'types'} icon={<Dashboard/>}/>
+        </Box>
+    );
 };
 
 export default AdminPage;

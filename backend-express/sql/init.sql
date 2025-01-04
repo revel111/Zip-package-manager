@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS zips
 (
     id                   INT AUTO_INCREMENT PRIMARY KEY,
     name                 VARCHAR(255) NOT NULL,
+    description          VARCHAR(255) NOT NULL,
     user_id              INT          NOT NULL,
 #         zip_file             LONGBLOB     NOT NULL,
     zip_file             LONGBLOB,
@@ -32,7 +33,6 @@ CREATE TABLE IF NOT EXISTS zips
 
     date_of_creation     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     date_of_modification TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-
 );
 
 CREATE TABLE IF NOT EXISTS zip_types

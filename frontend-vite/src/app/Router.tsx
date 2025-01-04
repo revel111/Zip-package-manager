@@ -37,7 +37,6 @@ const AppRoutes = () => {
                     path: 'admin',
                     children: [
                         {
-                            // TODO
                             index: true,
                             element: <AdminPage/>,
                         },
@@ -85,11 +84,11 @@ const AppRoutes = () => {
                     element: <Register/>
                 },
                 {
-                    // TODO
                     path: 'me',
                     element: <PrivateUserProfile/>
                 },
                 {
+                    // TODO
                     path: 'users/:id',
                     element: <PublicUserProfile/>
                 },

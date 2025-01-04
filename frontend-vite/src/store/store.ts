@@ -27,21 +27,14 @@ export default class Store {
     }
 
     async login(email: string, password: string) {
-        // try {
         const response = await api.users.login(email, password);
         localStorage.setItem("token", response.data.accessToken);
         this.setAuth(true);
         this.setUser(response.data.user);
-        // } catch (error) {
-        //     console.log(error.response?.data?.message);
-        // }
     }
 
     async registration(email: string, password: string, nickname: string, confirmPassword: string) {
         await api.users.register(email, password, confirmPassword, nickname);
-        // localStorage.setItem("token", response.data.accessToken);
-        // this.setAuth(true);
-        // this.setUser(response.data.user);
     }
 
     async logout() {
