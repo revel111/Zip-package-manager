@@ -52,7 +52,7 @@ export default class Store {
             await api.users.logout();
             localStorage.removeItem("token");
             this.setAuth(false);
-            this.setAuthChecked(false);
+            // this.setAuthChecked(false);
             this.setUser({} as IUser);
         } catch (error) {
             console.log(error.response?.data?.message);

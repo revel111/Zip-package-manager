@@ -31,14 +31,11 @@ const Zips = () => {
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
     useEffect(() => {
-        if (store.authChecked) {
-            if (!store.isAuth || !store.isAdmin()) {
-                navigate("/unauthorized");
-            } else {
-                console.log("Authorized Admin");
-            }
-        } else
+        if (!store.isAuth || !store.isAdmin()) {
             navigate("/unauthorized");
+        } else {
+            console.log("Authorized Admin");
+        }
     }, [store.authChecked, store.isAuth, store.isAdmin, navigate, store]);
 
     const emptyRows =
@@ -64,8 +61,8 @@ const Zips = () => {
                 .then((response: { data: React.SetStateAction<Zip[]>; }) => {
                     setZips(response.data);
                 }).catch((err: Error) => {
-                console.error(`Error fetching types: ${err}`);
-            });
+                    console.error(`Error fetching types: ${err}`);
+                });
         };
 
         fetch();

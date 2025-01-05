@@ -44,14 +44,11 @@ const Types = () => {
         const [nameSubmitOpen, setNameSubmitOpen] = useState(false);
 
         useEffect(() => {
-            if (store.authChecked) {
-                if (!store.isAuth || !store.isAdmin()) {
-                    navigate("/unauthorized");
-                } else {
-                    console.log("Authorized Admin");
-                }
-            } else
+            if (!store.isAuth || !store.isAdmin()) {
                 navigate("/unauthorized");
+            } else {
+                console.log("Authorized Admin");
+            }
         }, [store.authChecked, store.isAuth, store.isAdmin, navigate, store]);
 
         const emptyRows =
