@@ -32,12 +32,12 @@ apiInstance.interceptors.response.use((config) => {
 
 const api = {
     zipTypes: {
-        // paginatedZipTypes: () => axios.get('/zipTypes/pages', {
-        //     params: {
-        //         page: 1,
-        //         pageSize: 10
-        //     }
-        // }),
+        paginatedZipTypes: (page: number, pageSize: number) => axios.get(`/zipTypes/pages`, {
+            params: {
+                page: page + 1,
+                pageSize: pageSize
+            }
+        }),
         allZipTypes: () => apiInstance.get(`/zipTypes`),
         createZipType: (name: string) => apiInstance.post(`/zipTypes`, {name}),
         deleteZipType: (id: number) => apiInstance.delete(`/zipTypes/${id}`),
@@ -68,7 +68,7 @@ const api = {
             });
         },
         getByName: (name: string) => {
-            return apiInstance.get('/zips/names', {
+            return apiInstance.get(`/zips/names`, {
                 params: {
                     name: name,
                 }
@@ -101,6 +101,7 @@ const api = {
             nickname,
             email
         }),
+        promote: (id: number) => apiInstance.post(`/users/${id}/promote`),
     },
     index: {
         fetchStats: () => apiInstance.get(`/`),

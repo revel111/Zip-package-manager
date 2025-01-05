@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {
     Button, ClickAwayListener,
     Paper,
@@ -13,13 +13,22 @@ import {
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import {Type} from "../../zip/AddZip.tsx";
 import api from "../../../app/Api.tsx";
+import {Context} from "../../../main.tsx";
+import {useNavigate} from "react-router-dom";
 
 const Types = () => {
+    const {store} = useContext(Context);
+    const navigate = useNavigate();
     const [types, setTypes] = useState<Type[]>([]);
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [rowIndex, setRowIndex] = useState(-1);
     const [columnIndex, setColumnIndex] = useState(-1);
+
+    useEffect(() => {
+        if (!store.isAuth || !store.isAdmin())
+            navigate("/unauthorized");
+    }, [navigate, store]);
 
     const emptyRows =
         page > 0 ? Math.max(0, (1 + page) * rowsPerPage - types.length) : 0;
@@ -38,8 +47,8 @@ const Types = () => {
         setPage(0);
     };
 
-    const handleDelete = (id: number, index: number) => {
-        api.zipTypes.deleteZipType(id)
+    const handleDelete = async (id: number, index: number) => {
+        await api.zipTypes.deleteZipType(id)
             .then(r => {
                     if (r.status === 200) {
                         types.splice(index, 1);
@@ -52,8 +61,8 @@ const Types = () => {
             );
     };
 
-    const handleUpdate = (id: number, name: string, index: number) => {
-        api.zipTypes.updateZipType(id, name)
+    const handleUpdate = async (id: number, name: string, index: number) => {
+        await api.zipTypes.updateZipType(id, name)
             .then(r => {
                 if (r.status == 200) {
                     types[index]["name"] = name;
@@ -70,12 +79,15 @@ const Types = () => {
     };
 
     useEffect(() => {
-        api.zipTypes.allZipTypes()
-            .then((response: { data: React.SetStateAction<Type[]>; }) => {
-                setTypes(response.data);
-            }).catch((err: Error) => {
-            console.error(`Error fetching types: ${err}`);
-        });
+        const fetch = async () => {
+            await api.zipTypes.allZipTypes()
+                .then((response: { data: React.SetStateAction<Type[]>; }) => {
+                    setTypes(response.data);
+                }).catch((err: Error) => {
+                console.error(`Error fetching types: ${err}`);
+            });
+        };
+        fetch()
     }, []);
 
     return (
@@ -97,7 +109,7 @@ const Types = () => {
                                 : types
                         ).map((type, index) => (
                             <ClickAwayListener onClickAway={() => handleExit()}>
-                                <TableRow key={type.name}>
+                                <TableRow key={type.id}>
                                     <TableCell component="th" scope="row">
                                         {type.id}
                                     </TableCell>

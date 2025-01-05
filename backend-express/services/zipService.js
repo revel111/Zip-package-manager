@@ -47,7 +47,7 @@ const getPaginatedZips = async (name, page, pageSize) => {
     return {
         rows: rows,
         totalPages: totalPages,
-        totalElements: rows.length,
+        totalElements: count,
         page: page
     };
 };

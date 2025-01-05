@@ -1,12 +1,22 @@
 const createConnection = require("../db");
 
-const deleteByUserId = async (id) => {
+const findByIds = async (ids) => {
     const connection = await createConnection();
-    await connection.execute(`DELETE
-                              FROM users_roles
-                              WHERE user_id = ?`, [id]);
+    const [rows] = await connection.query(`SELECT id, name
+                                           FROM roles
+                                           WHERE id IN (?)`, [ids]);
+    return rows;
+};
+
+const getByName = async (roleName) => {
+    const connection = await createConnection();
+    const [rows] = await connection.query(`SELECT *
+                                           FROM roles
+                                           WHERE name = ?`, [roleName]);
+    return rows.length > 0 ? rows[0] : null;
 };
 
 module.exports = {
-    deleteByUserId
+    getByName,
+    findByIds
 };

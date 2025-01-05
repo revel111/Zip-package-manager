@@ -9,6 +9,7 @@ import FolderZipIcon from "@mui/icons-material/FolderZip";
 import HomeIcon from "@mui/icons-material/Home";
 import Person2Icon from "@mui/icons-material/Person2";
 import AddIcon from '@mui/icons-material/Add';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 
 const Header = () => {
     const {store} = useContext(Context);
@@ -71,6 +72,15 @@ const Header = () => {
                 >
                     Publish a new zip
                 </Button>
+                {store.isAuth && store.isAdmin() && (
+                    <Button
+                        startIcon={<AdminPanelSettingsIcon/>}
+                        onClick={() => navigate("/admin")}
+                        sx={{textTransform: "none"}}
+                    >
+                        Admin page
+                    </Button>
+                )}
             </Box>
 
             <Box sx={{display: "flex", alignItems: "center", gap: 2}}>

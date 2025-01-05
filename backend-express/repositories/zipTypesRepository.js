@@ -18,7 +18,9 @@ const saveAllTypeIds = async (typeIds, zipId) => {
 const getAllByZipId = async (zipId) => {
     const connection = await createConnection();
 
-    const [rows] = await connection.query(`SELECT * FROM zip_types WHERE zip_id = ?`, [zipId]);
+    const [rows] = await connection.query(`SELECT *
+                                           FROM zip_types
+                                           WHERE zip_id = ?`, [zipId]);
 
     return rows.length > 0 ? rows : null;
 };

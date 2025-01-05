@@ -72,12 +72,12 @@ const countAll = async () => {
     return rows.length > 0 ? rows[0].total : 0;
 };
 
-const getAllPaginated = async (page, offset) => {
+const getAllPaginated = async (pageSize, offset) => {
     const connection = await createConnection();
 
     const [rows] = await connection.query(`SELECT *
                                            FROM types
-                                           LIMIT ? OFFSET ?`, [page, offset]);
+                                           LIMIT ? OFFSET ?`, [pageSize, offset]);
 
     return rows;
 };

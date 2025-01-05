@@ -60,12 +60,14 @@ const countAllTypes = async () => {
 const getPaginatedTypes = async (page, pageSize) => {
     const count = await countAllTypes();
     const offset = (page - 1) * pageSize;
-    const rows = await getAllPaginated(page, offset);
+    const rows = await getAllPaginated(pageSize, offset);
     const totalPages = Math.ceil(count / pageSize);
 
     return {
         rows: rows,
-        totalPages: totalPages
+        totalPages: totalPages,
+        totalElements: count,
+        page: page
     };
 };
 

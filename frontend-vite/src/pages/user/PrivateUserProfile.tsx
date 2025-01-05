@@ -63,10 +63,10 @@ const PrivateUserProfile = () => {
 
     useEffect(() => {
         const verifyAuth = async () => {
-            if (localStorage.getItem('token')) {
+            if (store.isAuth) {
                 await store.checkAuth();
                 if (!store.user) {
-                    navigate("/");
+                    navigate("/login");
                 } else {
                     setFormData({
                         email: store.user.email || '',
@@ -74,7 +74,7 @@ const PrivateUserProfile = () => {
                     });
                 }
             } else {
-                navigate('/');
+                navigate("/login");
             }
         };
 

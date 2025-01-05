@@ -12,6 +12,7 @@ const {
 } = require('../services/userService');
 const {getZipsByUserId} = require("../services/zipService");
 const authHandler = require("../handlers/authHandler");
+const {saveUserIdRole} = require("../services/roleService");
 
 router.post('/register', async (req, res) => {
     const {email, password, nickname, confirmPassword} = req.body;
@@ -31,6 +32,11 @@ router.post('/logout', async (req, res) => {
     const {refreshToken} = req.cookies;
     res.clearCookie('refreshToken');
     res.status(200).send(await logout(refreshToken));
+});
+
+router.post('/:id/promote', async (req, res) => {
+    await saveUserIdRole(req.params.id, "admin");
+    res.status(200).send();
 });
 
 router.get('/refresh', async (req, res) => {
@@ -54,7 +60,7 @@ router.get('/:id/zips', async (req, res) => {
 
 router.delete('/:id', authHandler, async (req, res) => {
     await deleteUser(req.params.id);
-    res.status(200).json();
+    res.status(200).send();
 });
 
 router.put('/', authHandler, async (req, res) => {

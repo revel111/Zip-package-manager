@@ -56,8 +56,8 @@ const getAllByUserId = async (id) => {
     const connection = await createConnection();
 
     const [rows] = await connection.query(`SELECT id, name
-                                     FROM zips
-                                     WHERE user_id = ?`, [id]);
+                                           FROM zips
+                                           WHERE user_id = ?`, [id]);
 
     return rows;
 };

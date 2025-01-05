@@ -7,7 +7,7 @@ const findRolesByUserId = async (userId) => {
                                            FROM users_roles
                                            WHERE user_id = ?`, [userId]);
 
-    return rows ? rows[0] : [];
+    return rows ? rows : [];
 };
 
 const save = async (user_id, roleName) => {
@@ -19,16 +19,15 @@ const save = async (user_id, roleName) => {
     return {user_id: user_id, role_id: role.id};
 };
 
-const getByName = async (roleName) => {
+const deleteByUserId = async (id) => {
     const connection = await createConnection();
-
-    const [rows] = await connection.query(`SELECT *
-                                           FROM roles
-                                           WHERE name = ?`, [roleName]);
-    return rows.length > 0 ? rows[0] : null;
+    await connection.execute(`DELETE
+                              FROM users_roles
+                              WHERE user_id = ?`, [id]);
 };
 
 module.exports = {
     findRolesByUserId,
-    save
+    save,
+    deleteByUserId
 };

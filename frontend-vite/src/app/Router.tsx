@@ -1,6 +1,6 @@
 import {createBrowserRouter, Navigate} from 'react-router-dom';
 import Home from '../pages/home/Home';
-import Error from '../pages/error/Error';
+import Error from '../pages/errors/Error';
 import Layout from "../layout/Layout.tsx";
 import ZipPage from "../pages/zip/ZipPage.tsx";
 import AdminPage from "../pages/admin/AdminPage.tsx";
@@ -13,6 +13,8 @@ import PublicUserProfile from "../pages/user/PublicUserProfile.tsx";
 import Users from "../pages/admin/tables/Users.tsx";
 import PrivateUserProfile from "../pages/user/PrivateUserProfile.tsx";
 import Zips from "../pages/admin/tables/Zips.tsx";
+import ErrorIcon from '@mui/icons-material/Error';
+import DoDisturbIcon from '@mui/icons-material/DoDisturb';
 
 
 const AppRoutes = () => {
@@ -93,8 +95,12 @@ const AppRoutes = () => {
                     element: <PublicUserProfile/>
                 },
                 {
+                    path: 'unauthorized',
+                    element: <Error icon={<DoDisturbIcon/>} text={"401 Access denied."}/>
+                },
+                {
                     path: '*',
-                    element: <Error/>
+                    element: <Error icon={<ErrorIcon/>} text={"404 Page not found"}/>
                 }
             ]
         }

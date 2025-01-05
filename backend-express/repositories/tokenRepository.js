@@ -1,5 +1,4 @@
 const createConnection = require("../db");
-const {token} = require("morgan");
 
 const getById = async (id) => {
     const connection = await createConnection();

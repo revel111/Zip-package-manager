@@ -26,6 +26,10 @@ export default class Store {
         this.user = user;
     }
 
+    isAdmin(): boolean {
+        return this.user.roles.some(role => role.name === "admin");
+    }
+
     async login(email: string, password: string) {
         const response = await api.users.login(email, password);
         localStorage.setItem("token", response.data.accessToken);

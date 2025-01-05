@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import api from "../../../app/Api.tsx";
 import {
     Button,
@@ -10,6 +10,8 @@ import {
     TableRow,
 } from "@mui/material";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
+import {Context} from "../../../main.tsx";
+import {useNavigate} from "react-router-dom";
 
 interface User {
     id: number;
@@ -20,9 +22,16 @@ interface User {
 }
 
 const Users = () => {
+    const {store} = useContext(Context);
+    const navigate = useNavigate();
     const [users, setUsers] = useState<User[]>([]);
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
+
+    useEffect(() => {
+        if (!store.isAuth || !store.isAdmin())
+            navigate("/unauthorized");
+    }, [navigate, store]);
 
     const emptyRows =
         page > 0 ? Math.max(0, (1 + page) * rowsPerPage - users.length) : 0;
@@ -42,16 +51,19 @@ const Users = () => {
     };
 
     useEffect(() => {
-        api.users.getAll()
-            .then((response: { data: React.SetStateAction<User[]>; }) => {
-                setUsers(response.data);
-            }).catch((err: Error) => {
-            console.error(`Error fetching types: ${err}`);
-        });
+        const fetch = async () => {
+            api.users.getAll()
+                .then((response: { data: React.SetStateAction<User[]>; }) => {
+                    setUsers(response.data);
+                }).catch((err: Error) => {
+                console.error(`Error fetching types: ${err}`);
+            });
+        }
+        fetch();
     }, [])
 
-    const handleDelete = (id: number, index: number) => {
-        api.users.deleteById(id)
+    const handleDelete = async (id: number, index: number) => {
+        await api.users.deleteById(id)
             .then(r => {
                     if (r.status === 200) {
                         users.splice(index, 1);

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
     Button,
     Paper,
@@ -12,6 +12,8 @@ import {
 } from "@mui/material";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import api from "../../../app/Api.tsx";
+import {Context} from "../../../main.tsx";
+import {useNavigate} from "react-router-dom";
 
 interface Zip {
     id: number;
@@ -22,9 +24,16 @@ interface Zip {
 }
 
 const Zips = () => {
+    const {store} = useContext(Context);
+    const navigate = useNavigate();
     const [zips, setZips] = useState<Zip[]>([]);
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
+
+    useEffect(() => {
+        if (!store.isAuth || !store.isAdmin())
+            navigate("/unauthorized");
+    }, [navigate, store]);
 
     const emptyRows =
         page > 0 ? Math.max(0, (1 + page) * rowsPerPage - zips.length) : 0;
