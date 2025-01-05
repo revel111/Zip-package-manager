@@ -68,7 +68,7 @@ router.get('/:id/zips', async (req, res) => {
     res.status(200).send(await getZipsByUserId(req.params.id));
 });
 
-router.delete('/:id', authHandler, adminHandler, async (req, res) => {
+router.delete('/:id', authHandler, async (req, res) => {
     await deleteUser(req.params.id);
     res.status(200).send();
 });

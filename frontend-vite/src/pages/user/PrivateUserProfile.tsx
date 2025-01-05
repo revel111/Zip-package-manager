@@ -51,6 +51,7 @@ const PrivateUserProfile = () => {
     });
     const [passwordSubmitOpen, setPasswordSubmitOpen] = useState(false);
     const [userDataSubmitOpen, setUserDataSubmitOpen] = useState(false);
+    const [deleteAccountOpen, setDeleteAccount] = useState(false);
 
     const showSnackbar = (message: string, severity: 'success' | 'info' | 'warning' | 'error') => {
         setSnackbar({open: true, message, severity});
@@ -61,13 +62,10 @@ const PrivateUserProfile = () => {
     };
 
     useEffect(() => {
-        if (store.authChecked) {
-            if (!store.isAuth) {
-                navigate("/unauthorized");
-            }
-        } else
+        if (!store.isAuth) {
             navigate("/unauthorized");
-    }, [store.authChecked, store.isAuth, navigate, store]);
+        }
+    }, [store.isAuth, navigate, store]);
 
     const handleChange = (e) => {
         const {name, value} = e.target;
@@ -151,6 +149,16 @@ const PrivateUserProfile = () => {
         return Object.keys(newErrors).length === 0;
     };
 
+    const handleDeleteAccount = async () => {
+        try {
+            await api.users.deleteById(store.user.id);
+            await store.logout();
+            navigate('/');
+        } catch (error) {
+            navigate('/');
+        }
+    };
+
     return (
         <Box
             sx={{
@@ -210,6 +218,20 @@ const PrivateUserProfile = () => {
             <Button variant="outlined" onClick={() => setPasswordDialogOpen(true)} fullWidth>
                 Change Password
             </Button>
+
+            <Button variant="outlined" onClick={() => setDeleteAccount(true)} fullWidth>
+                Delete account
+            </Button>
+
+            <ConfirmDialog
+                open={deleteAccountOpen}
+                message={"Do you really want to delete your account?"}
+                onConfirm={() => {
+                    setDeleteAccount(false);
+                    handleDeleteAccount();
+                }}
+                onCancel={() => setDeleteAccount(false)}
+            ></ConfirmDialog>
 
             <Dialog open={passwordDialogOpen} onClose={() => setPasswordDialogOpen(false)}>
                 <DialogTitle>Change Password</DialogTitle>

@@ -95,7 +95,6 @@ const PublicUserProfile = () => {
                 </Box>
             </Paper>
 
-
             <Paper elevation={3} sx={{padding: 4}}>
                 <Typography variant="h5" fontWeight="bold" gutterBottom>
                     Published Zips

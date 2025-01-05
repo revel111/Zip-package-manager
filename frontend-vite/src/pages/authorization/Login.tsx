@@ -1,5 +1,4 @@
-import { Box, Button, IconButton, InputAdornment, TextField, Typography } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { Box, Button, TextField, Typography } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../../main.tsx";
 import { observer } from "mobx-react-lite";
@@ -19,7 +18,6 @@ const Login = () => {
         password: "",
     });
     const { store } = useContext(Context);
-    const [showPassword, setShowPassword] = useState(false);
     const [snackbar, setSnackbar] = useState({
         open: false,
         message: "",
@@ -46,17 +44,8 @@ const Login = () => {
         }));
     };
 
-    const handleClickShowPassword = () => {
-        setShowPassword((prev) => !prev);
-    };
-
-    const handleMouseDownPassword = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-    };
-
     const handleLogin = async () => {
-        await store
-            .login(data.email, data.password)
+        await store.login(data.email, data.password)
             .then(() => {
                 navigate("/");
             })

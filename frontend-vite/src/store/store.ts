@@ -23,6 +23,10 @@ export default class Store {
         this.isLoading = bool;
     }
 
+    setAuthChecked(bool: boolean) {
+        this.isAuth = bool;
+    }
+
     setUser(user: IUser) {
         this.user = user;
     }
@@ -36,6 +40,7 @@ export default class Store {
         localStorage.setItem("token", response.data.accessToken);
         this.setAuth(true);
         this.setUser(response.data.user);
+        this.setAuthChecked(true);
     }
 
     async registration(email: string, password: string, nickname: string, confirmPassword: string) {
@@ -47,6 +52,7 @@ export default class Store {
             await api.users.logout();
             localStorage.removeItem("token");
             this.setAuth(false);
+            this.setAuthChecked(false);
             this.setUser({} as IUser);
         } catch (error) {
             console.log(error.response?.data?.message);
@@ -63,7 +69,7 @@ export default class Store {
         } catch (error) {
             console.log(error.response?.data?.message);
         } finally {
-            this.authChecked = true;
+            this.setAuthChecked(true);
             this.setLoading(false);
         }
     }
