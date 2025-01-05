@@ -12,10 +12,15 @@ const AdminPage = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!store.isAuth || !store.isAdmin()) {
+        if (store.authChecked) {
+            if (!store.isAuth || !store.isAdmin()) {
+                navigate("/unauthorized");
+            } else {
+                console.log("Authorized Admin");
+            }
+        } else
             navigate("/unauthorized");
-        }
-    }, [store, navigate]);
+    }, [store.authChecked, store.isAuth, store.isAdmin, navigate, store]);
 
 
     return (

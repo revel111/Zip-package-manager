@@ -2,7 +2,7 @@ import {Autocomplete, IconButton, InputAdornment, TextField} from "@mui/material
 import SearchIcon from '@mui/icons-material/Search';
 import {useEffect, useState} from "react";
 // import debounce from 'lodash.debounce';
-import api from "../../app/Api.tsx";
+import api from "../../app/Api.ts";
 import {createSearchParams, useNavigate} from "react-router-dom";
 
 export interface Zip {
@@ -17,13 +17,16 @@ const SearchBar = () => {
     const [zips, fetchZips] = useState<Zip[]>([]);
 
     useEffect(() => {
-        api.zips.getByName(searchTerm)
-            .then(response => {
-                fetchZips(response.data);
-            })
-            .catch((err: Error) => {
-                console.error(`Error fetching user: ${err}`);
-            });
+        const fetch = async() => {
+            await api.zips.getByName(searchTerm)
+                .then(response => {
+                    fetchZips(response.data);
+                })
+                .catch((err: Error) => {
+                    console.error(`Error fetching user: ${err}`);
+                });
+        }
+        fetch();
     }, [searchTerm]);
 
     const handleSearchClick = () => {

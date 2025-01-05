@@ -1,6 +1,6 @@
 import {makeAutoObservable} from "mobx";
 import {IUser} from "../app/dto/IUser.ts";
-import api, {baseURL} from "../app/Api.tsx";
+import api, {baseURL} from "../app/Api.ts";
 import axios from "axios";
 import {AuthResponse} from "../app/dto/AuthResponse.ts";
 
@@ -9,6 +9,7 @@ export default class Store {
     user = {roles: [], id: 0, email: '', nickname: ''} as IUser;
     isAuth = false;
     isLoading = false;
+    authChecked = false;
 
     constructor() {
         makeAutoObservable(this);
@@ -62,6 +63,7 @@ export default class Store {
         } catch (error) {
             console.log(error.response?.data?.message);
         } finally {
+            this.authChecked = true;
             this.setLoading(false);
         }
     }

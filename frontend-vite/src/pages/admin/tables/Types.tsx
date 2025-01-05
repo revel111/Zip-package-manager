@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import {Type} from "../../zip/AddZip.tsx";
-import api from "../../../app/Api.tsx";
+import api from "../../../app/Api.ts";
 import {Context} from "../../../main.tsx";
 import {useNavigate} from "react-router-dom";
 
@@ -26,9 +26,15 @@ const Types = () => {
     const [columnIndex, setColumnIndex] = useState(-1);
 
     useEffect(() => {
-        if (!store.isAuth || !store.isAdmin())
+        if (store.authChecked) {
+            if (!store.isAuth || !store.isAdmin()) {
+                navigate("/unauthorized");
+            } else {
+                console.log("Authorized Admin");
+            }
+        } else
             navigate("/unauthorized");
-    }, [navigate, store]);
+    }, [store.authChecked, store.isAuth, store.isAdmin, navigate, store]);
 
     const emptyRows =
         page > 0 ? Math.max(0, (1 + page) * rowsPerPage - types.length) : 0;

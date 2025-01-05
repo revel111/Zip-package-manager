@@ -1,7 +1,7 @@
 import {useParams, useNavigate, Link} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {Type} from "./AddZip.tsx";
-import api from "../../app/Api.tsx";
+import api from "../../app/Api.ts";
 
 
 export interface ViewZip {

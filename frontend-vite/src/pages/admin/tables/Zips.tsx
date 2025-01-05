@@ -11,7 +11,7 @@ import {
     TableRow
 } from "@mui/material";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
-import api from "../../../app/Api.tsx";
+import api from "../../../app/Api.ts";
 import {Context} from "../../../main.tsx";
 import {useNavigate} from "react-router-dom";
 
@@ -31,9 +31,15 @@ const Zips = () => {
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
     useEffect(() => {
-        if (!store.isAuth || !store.isAdmin())
+        if (store.authChecked) {
+            if (!store.isAuth || !store.isAdmin()) {
+                navigate("/unauthorized");
+            } else {
+                console.log("Authorized Admin");
+            }
+        } else
             navigate("/unauthorized");
-    }, [navigate, store]);
+    }, [store.authChecked, store.isAuth, store.isAdmin, navigate, store]);
 
     const emptyRows =
         page > 0 ? Math.max(0, (1 + page) * rowsPerPage - zips.length) : 0;
@@ -53,12 +59,16 @@ const Zips = () => {
     };
 
     useEffect(() => {
-        api.zips.getAll()
-            .then((response: { data: React.SetStateAction<Zip[]>; }) => {
-                setZips(response.data);
-            }).catch((err: Error) => {
-            console.error(`Error fetching types: ${err}`);
-        });
+        const fetch = async () => {
+            await api.zips.getAll()
+                .then((response: { data: React.SetStateAction<Zip[]>; }) => {
+                    setZips(response.data);
+                }).catch((err: Error) => {
+                console.error(`Error fetching types: ${err}`);
+            });
+        };
+
+        fetch();
     }, [])
 
     const handleDelete = (id: number, index: number) => {

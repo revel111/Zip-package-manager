@@ -12,7 +12,7 @@ import {
     Typography
 } from "@mui/material";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import api from "../../app/Api.tsx";
+import api from "../../app/Api.ts";
 import PasswordRules from "../../components/rules/PasswordRules.tsx";
 import PasswordField from "../../components/textfields/PasswordTextField.tsx";
 import CustomSnackBar from "../../components/textfields/CustomSnackBar.tsx";
@@ -62,24 +62,13 @@ const PrivateUserProfile = () => {
     };
 
     useEffect(() => {
-        const verifyAuth = async () => {
-            if (store.isAuth) {
-                await store.checkAuth();
-                if (!store.user) {
-                    navigate("/login");
-                } else {
-                    setFormData({
-                        email: store.user.email || '',
-                        nickname: store.user.nickname || '',
-                    });
-                }
-            } else {
-                navigate("/login");
+        if (store.authChecked) {
+            if (!store.isAuth) {
+                navigate("/unauthorized");
             }
-        };
-
-        verifyAuth();
-    }, [navigate, store]);
+        } else
+            navigate("/unauthorized");
+    }, [store.authChecked, store.isAuth, navigate, store]);
 
     const handleChange = (e) => {
         const {name, value} = e.target;

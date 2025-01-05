@@ -1,7 +1,7 @@
 import {Link, useSearchParams} from "react-router-dom";
 import {Pagination, PaginationItem, Box, CardContent, Typography} from "@mui/material";
 import {useEffect, useState} from "react";
-import api from "../../app/Api.tsx";
+import api from "../../app/Api.ts";
 import SearchBar, {Zip} from "../../components/home/SearchBar.tsx";
 
 interface Page {

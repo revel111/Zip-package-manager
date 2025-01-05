@@ -1,4 +1,4 @@
-const {findRolesByUserId, save, deleteByUserId} = require("../repositories/userRoleRepository");
+const {findRolesByUserId, save, deleteByUserId, userHasRole, deletePos} = require("../repositories/userRoleRepository");
 const {getByName, findByIds} = require("../repositories/roleRepository");
 const {HandlingError} = require("../handlers/errorHandler");
 
@@ -14,6 +14,10 @@ const saveUserIdRole = async (userId, roleName) => {
     return save(userId, roleName);
 };
 
+const deleteUserIdRole = async (userId, roleName) => {
+    await deletePos(userId, roleName);
+};
+
 const deleteRoleByUserId = async (userId) => {
     await deleteByUserId(userId);
 };
@@ -22,9 +26,19 @@ const getRoleByName = async (roleName) => {
     return getByName(roleName);
 };
 
+const isUserAdmin = async (userId, roleName) => {
+    const role = await getByName(roleName);
+    if (!role)
+        throw new HandlingError(404, "Role not found.");
+
+    return userHasRole(userId, role.id);
+};
+
 module.exports = {
     getAllRolesByUserId,
     saveUserIdRole,
     deleteRoleByUserId,
-    getRoleByName
+    getRoleByName,
+    isUserAdmin,
+    deleteUserIdRole
 }

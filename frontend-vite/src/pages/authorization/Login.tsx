@@ -1,10 +1,11 @@
-import {Box, Button, CircularProgress, IconButton, InputAdornment, TextField} from "@mui/material";
-import {Visibility, VisibilityOff} from "@mui/icons-material";
-import React, {useContext, useState} from "react";
-import {Context} from "../../main.tsx";
-import {observer} from "mobx-react-lite";
-import {useNavigate} from "react-router-dom";
+import { Box, Button, IconButton, InputAdornment, TextField, Typography } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import React, { useContext, useEffect, useState } from "react";
+import { Context } from "../../main.tsx";
+import { observer } from "mobx-react-lite";
+import { useNavigate } from "react-router-dom";
 import CustomSnackBar from "../../components/textfields/CustomSnackBar.tsx";
+import PasswordField from "../../components/textfields/PasswordTextField.tsx";
 
 interface LoginData {
     email: string;
@@ -14,18 +15,22 @@ interface LoginData {
 const Login = () => {
     const navigate = useNavigate();
     const [data, setData] = useState<LoginData>({
-        email: '',
-        password: '',
+        email: "",
+        password: "",
     });
-    const {store} = useContext(Context);
+    const { store } = useContext(Context);
     const [showPassword, setShowPassword] = useState(false);
     const [snackbar, setSnackbar] = useState({
         open: false,
-        message: '',
-        severity: 'success' as 'success' | 'info' | 'warning' | 'error',
+        message: "",
+        severity: "success" as "success" | "info" | "warning" | "error",
     });
 
-    const showSnackbar = (message: string, severity: 'success' | 'info' | 'warning' | 'error') => {
+    useEffect(() => {
+        if (store.isAuth) navigate("/");
+    }, [navigate, store.isAuth]);
+
+    const showSnackbar = (message: string, severity: "success" | "info" | "warning" | "error") => {
         setSnackbar({ open: true, message, severity });
     };
 
@@ -33,14 +38,8 @@ const Login = () => {
         setSnackbar((prev) => ({ ...prev, open: false }));
     };
 
-    if (store.isLoading)
-        return <CircularProgress />
-
-    if (store.isAuth)
-        navigate("/");
-
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const {name, value} = e.target;
+        const { name, value } = e.target;
         setData((prevData) => ({
             ...prevData,
             [name]: value,
@@ -56,68 +55,66 @@ const Login = () => {
     };
 
     const handleLogin = async () => {
-        await store.login(data.email, data.password)
-            .then((response) => {
-                navigate('/');
+        await store
+            .login(data.email, data.password)
+            .then(() => {
+                navigate("/");
             })
-            .catch((error) => {
-                showSnackbar('Wrong email or password', 'error');
+            .catch(() => {
+                showSnackbar("Wrong email or password", "error");
             });
     };
 
     return (
-        <div>
-            <Box
-                component="form"
-                noValidate
-                autoComplete="off"
+        <Box
+            sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                maxWidth: 400,
+                margin: "auto",
+                padding: 4,
+                border: "1px solid #ccc",
+                borderRadius: 4,
+                boxShadow: 2,
+                backgroundColor: "#fff",
+            }}
+        >
+            <Typography variant="h4" sx={{ marginBottom: 3 }}>
+                Login
+            </Typography>
+            <TextField
+                label="Enter your email"
+                variant="outlined"
+                name="email"
+                value={data.email}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+                required
+            />
+            <PasswordField
+                label="Enter your password"
+                name="password"
+                value={data.password}
+                onChange={handleChange}
+            />
+            <Button
+                variant="contained"
+                color="primary"
+                fullWidth
+                sx={{ marginTop: 2 }}
+                onClick={handleLogin}
             >
-                <TextField
-                    label="Enter your email"
-                    variant="outlined"
-                    name="email"
-                    value={data.email}
-                    onChange={handleChange}
-                    fullWidth
-                    margin="normal"
-                    required
-                />
-                <TextField
-                    label="Enter your password"
-                    variant="outlined"
-                    type={showPassword ? 'text' : 'password'}
-                    name="password"
-                    value={data.password}
-                    onChange={handleChange}
-                    fullWidth
-                    margin="normal"
-                    required
-                    slotProps={{
-                        input: {
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton
-                                        aria-label="toggle password visibility"
-                                        onClick={handleClickShowPassword}
-                                        onMouseDown={handleMouseDownPassword}
-                                        edge="end"
-                                    >
-                                        {showPassword ? <VisibilityOff/> : <Visibility/>}
-                                    </IconButton>
-                                </InputAdornment>
-                            ),
-                        }
-                    }}
-                />
-                <Button onClick={handleLogin}>Login</Button>
-            </Box>
+                Login
+            </Button>
             <CustomSnackBar
                 open={snackbar.open}
                 message={snackbar.message}
                 severity={snackbar.severity}
                 onClose={handleCloseSnackbar}
             />
-        </div>
+        </Box>
     );
 };
 

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import api from "../../app/Api.tsx";
+import api from "../../app/Api.ts";
 import {Box} from "@mui/material";
 
 export interface Type {

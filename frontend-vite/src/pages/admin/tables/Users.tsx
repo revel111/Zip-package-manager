@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import api from "../../../app/Api.tsx";
+import api from "../../../app/Api.ts";
 import {
     Button,
     Paper,
@@ -29,9 +29,15 @@ const Users = () => {
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
     useEffect(() => {
-        if (!store.isAuth || !store.isAdmin())
+        if (store.authChecked) {
+            if (!store.isAuth || !store.isAdmin()) {
+                navigate("/unauthorized");
+            } else {
+                console.log("Authorized Admin");
+            }
+        } else
             navigate("/unauthorized");
-    }, [navigate, store]);
+    }, [store.authChecked, store.isAuth, store.isAdmin, navigate, store]);
 
     const emptyRows =
         page > 0 ? Math.max(0, (1 + page) * rowsPerPage - users.length) : 0;

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {Box, Typography} from "@mui/material";
-import api from "../../app/Api.tsx";
+import api from "../../app/Api.ts";
 import SearchBar from "../../components/home/SearchBar.tsx";
 import Frame from "../../components/home/Frame.tsx";
 

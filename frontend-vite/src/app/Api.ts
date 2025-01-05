@@ -102,6 +102,8 @@ const api = {
             email
         }),
         promote: (id: number) => apiInstance.post(`/users/${id}/promote`),
+        demote: (id: number) => apiInstance.post(`/users/${id}/demote`),
+        isAdmin: (id: number) => apiInstance.get(`/users/${id}/isAdmin`),
     },
     index: {
         fetchStats: () => apiInstance.get(`/`),
