@@ -1,5 +1,5 @@
 import {useNavigate} from "react-router-dom";
-import {useContext, useEffect} from "react";
+import {useContext} from "react";
 import {Context} from "../../main.tsx";
 import {observer} from "mobx-react-lite";
 import {Button, Box, Typography} from "@mui/material";
@@ -14,16 +14,6 @@ import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 const Header = () => {
     const {store} = useContext(Context);
     const navigate = useNavigate();
-
-    useEffect(() => {
-        const authenticate = async () => {
-            if (localStorage.getItem("token")) {
-                await store.checkAuth();
-            }
-        };
-
-        authenticate();
-    }, [store]);
 
     return (
         <Box

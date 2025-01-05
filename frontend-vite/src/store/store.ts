@@ -6,7 +6,7 @@ import {AuthResponse} from "../app/dto/AuthResponse.ts";
 
 
 export default class Store {
-    user = {} as IUser;
+    user = {roles: [], id: 0, email: '', nickname: ''} as IUser;
     isAuth = false;
     isLoading = false;
 

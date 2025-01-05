@@ -5,15 +5,18 @@ import FolderZipIcon from "@mui/icons-material/FolderZip";
 import {useContext, useEffect} from "react";
 import {Context} from "../../main.tsx";
 import {useNavigate} from "react-router-dom";
+import {observer} from "mobx-react-lite";
 
 const AdminPage = () => {
     const {store} = useContext(Context);
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!store.isAuth || !store.isAdmin())
+        if (!store.isAuth || !store.isAdmin()) {
             navigate("/unauthorized");
-    }, [navigate, store]);
+        }
+    }, [store, navigate]);
+
 
     return (
         <Box sx={{
@@ -29,4 +32,4 @@ const AdminPage = () => {
     );
 };
 
-export default AdminPage;
+export default observer(AdminPage);

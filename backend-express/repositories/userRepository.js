@@ -65,6 +65,16 @@ const create = async (email, password, nickname) => {
     return {id: res.insertId, email: email, password: password, nickname: nickname};
 };
 
+const getAllPaginated = async (pageSize, offset) => {
+    const connection = await createConnection();
+
+    const [rows] = await connection.query(`SELECT *
+                                           FROM users
+                                           LIMIT ? OFFSET ?`, [pageSize, offset]);
+
+    return rows;
+};
+
 module.exports = {
     countAllUsers,
     getById,
@@ -73,5 +83,6 @@ module.exports = {
     update,
     create,
     getAll,
-    changePassword
+    changePassword,
+    getAllPaginated
 }
