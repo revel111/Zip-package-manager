@@ -40,7 +40,8 @@ const createUser = async (email, password, nickname, confirmPassword) => {
 
     const user = await create(email, password, nickname);
     const role = await saveUserIdRole(user.id, 'user');
-    const tokens = generateTokens({id: user.id, email: email});
+    const roles = [role];
+    const tokens = generateTokens({id: user.id, email: user.email, roles: roles});
     await saveToken(user.id, tokens.refreshToken);
 
     return {
@@ -49,7 +50,7 @@ const createUser = async (email, password, nickname, confirmPassword) => {
             id: user.id,
             email: user.email,
             nickname: user.nickname,
-            role: role
+            roles: roles
         }
     };
 };
@@ -67,11 +68,10 @@ const login = async (email, password) => {
 
     if (!await bcrypt.compare(password, user.password))
         throw new HandlingError(401, 'Wrong password.');
-
-    const tokens = generateTokens({id: user.id, email: email});
+    const roles = await getAllRolesByUserId(user.id);
+    const tokens = generateTokens({id: user.id, email: user.email, roles: roles});
     await saveToken(user.id, tokens.refreshToken);
 
-    const roles = await getAllRolesByUserId(user.id);
 
     return {
         ...tokens,
@@ -99,10 +99,9 @@ const refresh = async (refreshToken) => {
         throw new HandlingError(401, 'Wrong access token.');
 
     const user = await getUserById(tokenFromDb.user_id);
-    const tokens = generateTokens({id: user.id, email: user.email});
-    await saveToken(user.id, tokens.refreshToken);
-
     const roles = await getAllRolesByUserId(user.id);
+    const tokens = generateTokens({id: user.id, email: user.email, roles: roles});
+    await saveToken(user.id, tokens.refreshToken);
 
     return {
         ...tokens,

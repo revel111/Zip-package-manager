@@ -12,8 +12,8 @@ const {
 } = require('../services/userService');
 const {getZipsByUserId} = require("../services/zipService");
 const authHandler = require("../handlers/authHandler");
+const adminHandler = require("../handlers/adminHandler");
 const {saveUserIdRole, isUserAdmin, deleteUserIdRole} = require("../services/roleService");
-const {userHasRole} = require("../repositories/userRoleRepository");
 
 router.post('/register', async (req, res) => {
     const {email, password, nickname, confirmPassword} = req.body;
@@ -35,12 +35,12 @@ router.post('/logout', async (req, res) => {
     res.status(200).send(await logout(refreshToken));
 });
 
-router.post('/:id/promote', async (req, res) => {
+router.post('/:id/promote', authHandler, adminHandler, async (req, res) => {
     await saveUserIdRole(req.params.id, "admin");
     res.status(200).send();
 });
 
-router.post('/:id/demote', async (req, res) => {
+router.post('/:id/demote', authHandler, adminHandler, async (req, res) => {
     await deleteUserIdRole(req.params.id, "admin");
     res.status(200).send();
 });
@@ -52,7 +52,7 @@ router.get('/refresh', async (req, res) => {
     res.status(200).send(data);
 });
 
-router.get('/', async (req, res) => {
+router.get('/', authHandler, adminHandler, async (req, res) => {
     res.status(200).send(await getAllUsers());
 });
 
@@ -68,7 +68,7 @@ router.get('/:id/zips', async (req, res) => {
     res.status(200).send(await getZipsByUserId(req.params.id));
 });
 
-router.delete('/:id', authHandler, async (req, res) => {
+router.delete('/:id', authHandler, adminHandler, async (req, res) => {
     await deleteUser(req.params.id);
     res.status(200).send();
 });

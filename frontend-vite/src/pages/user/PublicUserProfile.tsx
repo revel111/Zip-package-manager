@@ -1,13 +1,16 @@
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import api from "../../app/Api.ts";
-import {Link, useNavigate, useParams} from "react-router-dom";
-import {Box, Typography, Paper, Chip, Divider} from "@mui/material";
+import {useNavigate, useParams} from "react-router-dom";
+import {Box, Typography, Paper, Chip, Divider, Button} from "@mui/material";
 import {User} from "../zip/ZipPage.tsx";
 import {Zip} from "../../components/home/SearchBar.tsx";
 import ViewTable, {Column} from "../../components/tables/ViewTable.tsx";
+import CustomAvatar from "../../components/decorations/CustomAvatar.tsx";
+import {Context} from "../../main.tsx";
 
 const PublicUserProfile = () => {
     const navigate = useNavigate();
+    const {store} = useContext(Context);
     const [profile, setProfile] = useState<User | null>(null);
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
     const [zips, setZips] = useState<Zip[]>([]);
@@ -56,37 +59,42 @@ const PublicUserProfile = () => {
     const zipColumns: Column<Zip>[] = [
         {id: "id", label: "ID"},
         {id: "name", label: "Name"},
-        {
-            id: "id",
-            label: "Actions",
-            align: "center",
-            render: (value: number) => (
-                <Link to={`/zips/${value}`} style={{textDecoration: "none"}}>
-                    <Typography
-                        variant="body2"
-                        color="primary"
-                        sx={{"&:hover": {textDecoration: "underline"}}}
-                    >
-                        View
-                    </Typography>
-                </Link>
-            ),
-        },
     ];
 
     return (
         <Box sx={{padding: 4, maxWidth: "800px", margin: "0 auto"}}>
-            <Paper elevation={3} sx={{padding: 4, marginBottom: 4}}>
-                <Typography variant="h4" fontWeight="bold" gutterBottom>
-                    {profile?.nickname || "User"}
-                </Typography>
-                <Typography variant="body2" color="textSecondary" gutterBottom>
-                    Joined on: {profile?.date_of_creation || "Unknown"}
-                </Typography>
-                {isAdmin && (
-                    <Chip label="Admin" color="primary" sx={{marginTop: 2}}/>
-                )}
+            <Paper elevation={3} sx={{padding: 4, marginBottom: 4, position: "relative"}}>
+                <Box sx={{display: "flex", justifyContent: "space-between"}}>
+                    <Box>
+                        <CustomAvatar/>
+                        <Typography variant="h4" fontWeight="bold" gutterBottom>
+                            {profile?.nickname}
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary" gutterBottom>
+                            Joined on: {profile?.date_of_creation}
+                        </Typography>
+                        {isAdmin && (
+                            <Chip label="Admin" color="primary" sx={{marginTop: 2}}/>
+                        )}
+                    </Box>
+
+                    {Number(id) === store.user.id && (
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => navigate("/me")}
+                            sx={{
+                                position: "absolute",
+                                right: 16,
+                                bottom: 16,
+                            }}
+                        >
+                            Edit
+                        </Button>
+                    )}
+                </Box>
             </Paper>
+
 
             <Paper elevation={3} sx={{padding: 4}}>
                 <Typography variant="h5" fontWeight="bold" gutterBottom>
@@ -94,7 +102,7 @@ const PublicUserProfile = () => {
                 </Typography>
                 <Divider sx={{marginY: 2}}/>
                 {zips.length > 0 ? (
-                    <ViewTable data={zips} columns={zipColumns}/>
+                    <ViewTable data={zips} columns={zipColumns} link={`/zips`}/>
                 ) : (
                     <Typography variant="body2" color="textSecondary">
                         User has not published any zips yet.

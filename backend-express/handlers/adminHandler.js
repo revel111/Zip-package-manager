@@ -4,7 +4,7 @@ module.exports = async (req, res, next) => {
     try {
         const user = req.user;
 
-        if (!user || !user.roles.includes('admin')) {
+        if (!user || !user.roles.some(x => x.name === 'admin')) {
             return next(new HandlingError(401, 'Unauthorized.'));
         }
         next();

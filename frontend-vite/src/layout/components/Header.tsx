@@ -87,7 +87,7 @@ const Header = () => {
                             Logout
                         </Button>
                         <Button
-                            onClick={() => navigate("/me")}
+                            onClick={() => navigate(`/users/${store.user.id}`)}
                             startIcon={<Person2Icon/>}
                             sx={{textTransform: "none"}}
                         >

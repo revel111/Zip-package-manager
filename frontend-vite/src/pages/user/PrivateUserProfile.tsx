@@ -2,7 +2,6 @@ import {useContext, useEffect, useState} from 'react';
 import {Context} from "../../main.tsx";
 import {useNavigate} from "react-router-dom";
 import {
-    Avatar,
     Box,
     Button,
     Dialog, DialogActions,
@@ -11,12 +10,12 @@ import {
     TextField,
     Typography
 } from "@mui/material";
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import api from "../../app/Api.ts";
 import PasswordRules from "../../components/rules/PasswordRules.tsx";
 import PasswordField from "../../components/textfields/PasswordTextField.tsx";
 import CustomSnackBar from "../../components/textfields/CustomSnackBar.tsx";
 import ConfirmDialog from "../../components/dialog/ConfirmDialog.tsx";
+import CustomAvatar from "../../components/decorations/CustomAvatar.tsx";
 
 interface ChangePassword {
     oldPassword: string;
@@ -164,9 +163,7 @@ const PrivateUserProfile = () => {
                 margin: 'auto',
             }}
         >
-            <Avatar sx={{width: 100, height: 100}}>
-                <AccountCircleIcon fontSize="large"/>
-            </Avatar>
+            <CustomAvatar/>
             <TextField
                 label="Email"
                 name="email"

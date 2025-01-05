@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+    Button,
     Paper,
     Table,
     TableBody,
@@ -11,7 +12,7 @@ import {
     TableRow,
 } from "@mui/material";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
-
+import {useNavigate} from "react-router-dom";
 
 export interface Column<T> {
     id: keyof T;
@@ -24,14 +25,17 @@ interface ReusableTableProps<T> {
     columns: Column<T>[];
     rowsPerPageOptions?: number[];
     defaultRowsPerPage?: number;
+    link: string;
 }
 
-const ViewTable = <T,>({
-                               data,
-                               columns,
-                               rowsPerPageOptions = [5, 10, 25],
-                               defaultRowsPerPage = 5,
-                           }: ReusableTableProps<T>) => {
+const ViewTable = <T, >({
+                            link,
+                            data,
+                            columns,
+                            rowsPerPageOptions = [5, 10, 25],
+                            defaultRowsPerPage = 5,
+                        }: ReusableTableProps<T>) => {
+    const navigate = useNavigate();
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(defaultRowsPerPage);
 
@@ -52,7 +56,9 @@ const ViewTable = <T,>({
     const emptyRows =
         page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
 
-    const renderCellContent = (value: T[keyof T]): React.ReactNode => {
+    const renderCellContent = (
+        value: T[keyof T],
+    ): React.ReactNode => {
         if (value === null || value === undefined) return '';
         if (typeof value === 'boolean') return value ? 'Yes' : 'No';
         return value.toString();
@@ -68,6 +74,7 @@ const ViewTable = <T,>({
                                 {column.label}
                             </TableCell>
                         ))}
+                        <TableCell align="center">Links</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -81,18 +88,22 @@ const ViewTable = <T,>({
                                     {renderCellContent(row[column.id])}
                                 </TableCell>
                             ))}
+                            <TableCell align="center">
+                                <Button
+                                    onClick={() => navigate(`${link}/${row.id}`)} // Navigate using row.id
+                                    variant="contained"
+                                    color="primary"
+                                >
+                                    View
+                                </Button>
+                            </TableCell>
                         </TableRow>
                     ))}
-                    {emptyRows > 0 && (
-                        <TableRow style={{ height: 53 * emptyRows }}>
-                            <TableCell colSpan={columns.length} />
-                        </TableRow>
-                    )}
                 </TableBody>
                 <TableFooter>
                     <TableRow>
                         <TablePagination
-                            rowsPerPageOptions={[...rowsPerPageOptions, { label: 'All', value: -1 }]}
+                            rowsPerPageOptions={[...rowsPerPageOptions, {label: 'All', value: -1}]}
                             count={data.length}
                             rowsPerPage={rowsPerPage}
                             page={page}

@@ -90,7 +90,6 @@ const AppRoutes = () => {
                     element: <PrivateUserProfile/>
                 },
                 {
-                    // TODO
                     path: 'users/:id',
                     element: <PublicUserProfile/>
                 },

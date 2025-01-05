@@ -29,37 +29,46 @@ const ZipPage = () => {
     const [user, setUser] = useState<User>();
 
     useEffect(() => {
-        api.zips.getById(Number(id))
-            .then(response => {
-                setZip(response.data);
-            })
-            .catch((err: Error) => {
-                console.error(`Error fetching zip: ${err}`);
-                navigate('/error');
-                return;
-            });
+        const fetch = async () => {
+            await api.zips.getById(Number(id))
+                .then(response => {
+                    setZip(response.data);
+                })
+                .catch((err: Error) => {
+                    console.error(`Error fetching zip: ${err}`);
+                    navigate('/error');
+                    return;
+                });
+        };
+
+        fetch();
     }, [id, navigate]);
 
     useEffect(() => {
-        api.zips.getTypesById(Number(id))
-            .then(response => {
-                setTypes(response.data);
-            })
-            .catch((err: Error) => {
-                console.error(`Error fetching types: ${err}`);
-            });
+        const fetch = async () => {
+            await api.zips.getTypesById(Number(id))
+                .then(response => {
+                    setTypes(response.data);
+                })
+                .catch((err: Error) => {
+                    console.error(`Error fetching types: ${err}`);
+                });
+        };
+        fetch();
     }, [id]);
 
     useEffect(() => {
-        if (zip?.user_id) {
-            api.users.getById(zip.user_id)
-                .then(response => {
-                    setUser(response.data);
-                })
-                .catch((err: Error) => {
-                    console.error(`Error fetching user: ${err}`);
-                });
-        }
+        const fetch = async () => {
+            if (zip?.user_id) {
+                api.users.getById(zip.user_id)
+                    .then(response => {
+                        setUser(response.data);
+                    })
+                    .catch((err: Error) => {
+                        console.error(`Error fetching user: ${err}`);
+                    });
+            }
+        };
     }, [zip?.user_id]);
 
     return (
@@ -67,7 +76,6 @@ const ZipPage = () => {
             <div>
                 <h1>Zip:</h1>
                 {zip?.name} <br/>
-                {zip?.file_name}<br/>
             </div>
             <div>
                 {types && types.length > 0 ? (

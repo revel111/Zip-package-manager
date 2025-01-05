@@ -4,11 +4,12 @@ const {HandlingError} = require("../handlers/errorHandler");
 
 const getAllRolesByUserId = async (userId) => {
     const rolesIds = await findRolesByUserId(userId);
-    return findByIds(rolesIds.map(x => x.role_id));
+    return rolesIds && rolesIds.length > 0 ? await findByIds(rolesIds.map(x => x.role_id)) : [];
 };
 
 const saveUserIdRole = async (userId, roleName) => {
-    if (await getAllRolesByUserId(userId, roleName).some(x => x.name === roleName))
+    const roles = await getAllRolesByUserId(userId);
+    if (roles.some(x => x.name === roleName))
         throw new HandlingError(409, "User already has this role.");
 
     return save(userId, roleName);
