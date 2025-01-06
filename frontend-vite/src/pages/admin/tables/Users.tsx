@@ -15,6 +15,7 @@ import {useNavigate} from "react-router-dom";
 import BigTextEntry from "../../../components/enrties/BigTextEntry.tsx";
 import CustomSnackBar from "../../../components/textfields/CustomSnackBar.tsx";
 import ConfirmDialog from "../../../components/dialog/ConfirmDialog.tsx";
+import {type} from "node:os";
 
 interface User {
     id: number;
@@ -204,6 +205,14 @@ const Users = () => {
                                         </TableCell>
                                     </>
                                 )}
+                                <TableCell component="th" scope="row">
+                                    <Button onClick={() => navigate(`/users/${user.id}`)}
+                                            variant="contained"
+                                            color="primary"
+                                    >
+                                        View
+                                    </Button>
+                                </TableCell>
                             </TableRow>
                         ))}
                         {emptyRows > 0 && (

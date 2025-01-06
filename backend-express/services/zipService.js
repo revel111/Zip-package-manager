@@ -1,4 +1,13 @@
-const {countAllZips, create, getById, deleteById, getAllByName, getAllByUserId, getAll} = require('../repositories/zipRepository')
+const {
+    countAllZips,
+    create,
+    getById,
+    deleteById,
+    getAllByName,
+    getAllByUserId,
+    getAll,
+    getAllByZipType
+} = require('../repositories/zipRepository')
 const {HandlingError} = require("../handlers/errorHandler");
 const {getCountTypes} = require('../services/typesService');
 const {saveAll, deleteAllZipTypesByZipId} = require('../services/zipTypesService');
@@ -8,21 +17,35 @@ const getZipCount = async function () {
     return await countAllZips();
 };
 
-const createZip = async (name, fileName, zip, types) => {
-    if (!name || name.length > 20 || name.length < 2)
-        throw new HandlingError(400, 'Bad name was provided.');
+const createZip = async (name, fileName, zip, types, userId, description) => {
+    validateName(name);
 
-    if (!zip || !zip.buffer || zip.size > 209715200)
-        throw new HandlingError(400, 'File size is too large or empty.');
+    validateZip(zip);
 
-    if (types && await getCountTypes(types) !== types.length)
-        throw new HandlingError(400, 'Types are invalid.');
+    await validateTypes(types);
+
+    const {nameD, id, fileNameD} = await create(name, fileName, zip, userId, description);
 
     if (types)
-        await saveAll(types);
+        await saveAll(types, id);
 
-    return create(zip, fileName, zip);
+    return {nameD, id, fileNameD};
 };
+
+const validateName = (name) => {
+    if (!name || name.length > 20 || name.length < 2)
+        throw new HandlingError(400, 'Bad name was provided.');
+};
+
+const validateZip = (zip) => {
+    if (!zip || !zip.buffer || zip.size > 209715200)
+        throw new HandlingError(400, 'File size is too large or empty.')
+};
+
+const validateTypes = async (types) => {
+    if (types && await getCountTypes(types) !== types.length)
+        throw new HandlingError(400, 'Types are invalid.');
+}
 
 const getZipById = async (id) => {
     const zip = await getById(id);
@@ -64,6 +87,10 @@ const getAllZips = async () => {
     return await getAll();
 }
 
+const getAllZipsByZipType = async (zipTypeId) => {
+    return getAllByZipType(zipTypeId);
+};
+
 module.exports = {
     getZipCount,
     createZip,
@@ -72,5 +99,6 @@ module.exports = {
     getPaginatedZips,
     getZipsByName,
     getZipsByUserId,
-    getAllZips
+    getAllZips,
+    getAllZipsByZipType
 };

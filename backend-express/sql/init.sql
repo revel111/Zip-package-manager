@@ -27,8 +27,7 @@ CREATE TABLE IF NOT EXISTS zips
     name                 VARCHAR(255) NOT NULL,
     description          VARCHAR(255) NOT NULL,
     user_id              INT          NOT NULL,
-#         zip_file             LONGBLOB     NOT NULL,
-    zip_file             LONGBLOB,
+    zip_file             LONGBLOB     NOT NULL,
     file_name            VARCHAR(255) NOT NULL,
 
     date_of_creation     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

@@ -145,13 +145,16 @@ const Zips = () => {
                                         Delete
                                     </Button>
                                 </TableCell>
+                                <TableCell component="th" scope="row">
+                                    <Button onClick={() => navigate(`/zips/${zip.id}`)}
+                                            variant="contained"
+                                            color="primary"
+                                    >
+                                        View
+                                    </Button>
+                                </TableCell>
                             </TableRow>
                         ))}
-                        {emptyRows > 0 && (
-                            <TableRow style={{height: 53 * emptyRows}}>
-                                <TableCell colSpan={6}/>
-                            </TableRow>
-                        )}
                     </TableBody>
                     <TableFooter>
                         <TableRow>

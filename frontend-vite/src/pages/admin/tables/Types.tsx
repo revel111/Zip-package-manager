@@ -11,7 +11,6 @@ import {
     TableRow, TextField, Typography
 } from "@mui/material";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
-import {Type} from "../../zip/AddZip.tsx";
 import api from "../../../app/Api.ts";
 import {Context} from "../../../main.tsx";
 import {useNavigate} from "react-router-dom";
@@ -26,6 +25,13 @@ interface Name {
 interface Delete {
     typeId: number;
     index: number;
+}
+
+export interface Type {
+    id: number;
+    name: string;
+    date_of_creation: string;
+    date_of_modification: string;
 }
 
 const Types = () => {
@@ -219,6 +225,14 @@ const Types = () => {
                                                 setDeleteSubmit(true);
                                             }}>
                                                 Delete
+                                            </Button>
+                                        </TableCell>
+                                        <TableCell component="th" scope="row">
+                                            <Button onClick={() => navigate(`/types/${type.id}`)}
+                                                    variant="contained"
+                                                    color="primary"
+                                            >
+                                                View
                                             </Button>
                                         </TableCell>
                                     </TableRow>

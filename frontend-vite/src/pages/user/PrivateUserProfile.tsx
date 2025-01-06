@@ -278,7 +278,7 @@ const PrivateUserProfile = () => {
                         handlePasswordSubmit();
                     }}
                     onCancel={() => setPasswordSubmitOpen(false)}
-                ></ConfirmDialog>
+                />
             </Dialog>
 
             <CustomSnackBar

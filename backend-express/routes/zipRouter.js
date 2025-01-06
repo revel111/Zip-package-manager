@@ -4,17 +4,19 @@ const {createZip, getZipById, deleteZipById, getPaginatedZips, getAllZips} = req
 const {getAllTypesByZipId} = require("../services/zipTypesService");
 const {getAllByName} = require("../repositories/zipRepository");
 const authHandler = require("../handlers/authHandler");
-const {getAllZipTypes} = require("../services/typesService");
 const router = express.Router();
 
 const storage = multer.memoryStorage();
 const upload = multer({storage});
 
-router.post('/', upload.single('blob'), authHandler, async (req, res) => {
-    const {name, types, fileName} = req.body;
+router.post('/', authHandler, upload.single('file'), async (req, res) => {
+    const {name, fileName, description} = req.body;
+    let types = req.body.types;
+    types = JSON.parse(types);
     const zip = req.file;
+    const userId = req.user.id;
 
-    res.status(200).send(await createZip({name, fileName, zip, types}));
+    res.status(200).send(await createZip(name, fileName, zip, types, userId, description));
 });
 
 router.get('/paginated', async (req, res) => {
@@ -48,7 +50,7 @@ router.get('/:id/types', async (req, res) => {
 });
 
 router.get('/:id/download', async (req, res) => {
-
+    res.status(200).json();
 });
 
 module.exports = router;

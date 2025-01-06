@@ -47,15 +47,18 @@ const api = {
                 name: name
             }
         }),
+        getZipsByZipType: (id: number) => apiInstance.get(`/zipTypes/${id}/zips`),
+        getZipTypeById: (id: number) => apiInstance.get(`/zipTypes/${id}`),
     },
     zips: {
-        createZip: (name: string, types: number[], file: File | null, fileName: string) => {
+        createZip: (name: string, description: string, types: number[], file: File | null, fileName: string) => {
             const formData = new FormData();
 
             formData.append('name', name);
+            formData.append('description', description);
             formData.append('types', JSON.stringify(types));
             formData.append('fileName', fileName);
-            formData.append('blob', file);
+            formData.append('file', file);
 
             return apiInstance.post('/zips', formData, {
                 headers: {

@@ -7,10 +7,10 @@ const countAllZips = async function () {
     return rows.length > 0 ? rows[0].total : 0;
 };
 
-const create = async function (name, fileName, zip) {
+const create = async function (name, fileName, zip, userId, description) {
     const connection = await createConnection();
-    const [result] = await connection.execute(`INSERT INTO zips (name, file_name, zip_file, user_id)
-                                               VALUES (?, ?, ?, ?)`, [name, fileName, zip, 0]);
+    const [result] = await connection.execute(`INSERT INTO zips (name, file_name, zip_file, user_id, description)
+                                               VALUES (?, ?, ?, ?, ?)`, [name, fileName, zip, userId, description]);
 
     return {name: name, id: result.insertId, fileName: fileName};
 };
@@ -65,8 +65,18 @@ const getAllByUserId = async (id) => {
 const getAll = async () => {
     const connection = await createConnection();
 
-    const [rows] = await connection.query(`SELECT name, user_id, date_of_creation, date_of_modification
+    const [rows] = await connection.query(`SELECT id, name, user_id, date_of_creation, date_of_modification
                                            FROM zips`);
+    return rows;
+};
+
+const getAllByZipType = async (typeId) => {
+    const connection = await createConnection();
+
+    const [rows] = await connection.query(`SELECT id, name
+                                           FROM zips
+                                                    LEFT JOIN zip_types on zips.id = zip_types.zip_id
+                                                    WHERE type_id = ?`, [typeId]);
     return rows;
 };
 
@@ -78,5 +88,6 @@ module.exports = {
     getPaginatedByName,
     getAllByName,
     getAllByUserId,
-    getAll
+    getAll,
+    getAllByZipType
 };

@@ -50,8 +50,8 @@ const countTypes = async (typeIds) => {
     const connection = await createConnection();
 
     const [rows] = await connection.query(`SELECT COUNT(*) AS total
-                                           FROM types t
-                                           WHERE t.id IN ?`, [typeIds]);
+                                           FROM types
+                                           WHERE id IN (?)`, [typeIds]);
     return rows.length > 0 ? rows[0].total : 0;
 };
 
@@ -86,7 +86,7 @@ const getAllByName = async (name) => {
     const connection = await createConnection();
 
     [rows] = await connection.query(`SELECT id, name
-                                     FROM zips 
+                                     FROM types 
                                      WHERE name LIKE ?`, [`%${name}%`]);
 
     return rows;

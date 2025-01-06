@@ -4,10 +4,11 @@ const {
     createZipType,
     deleteZipType,
     updateZipType,
-    getPaginatedTypes, getTypesByName
+    getPaginatedTypes, getTypesByName, getTypeById
 } = require("../services/typesService")
 const authHandler = require("../handlers/authHandler");
 const adminHandler = require("../handlers/adminHandler");
+const {getZipById, getAllZipsByZipType} = require("../services/zipService");
 const router = express.Router();
 
 router.get('/pages', authHandler, adminHandler, async (req, res) => {
@@ -25,6 +26,14 @@ router.get('/names', async (req, res) => {
 
 router.get('/', authHandler, adminHandler, async (req, res) => {
     res.status(200).json(await getAllZipTypes());
+});
+
+router.get('/:id/zips', async (req, res) => {
+    res.status(200).send(await getAllZipsByZipType(req.params.id));
+});
+
+router.get('/:id', async (req, res) => {
+    res.status(200).send(await getTypeById(req.params.id));
 });
 
 router.post('/', authHandler, adminHandler, async (req, res) => {

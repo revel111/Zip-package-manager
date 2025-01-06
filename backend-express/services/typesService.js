@@ -37,6 +37,15 @@ const updateZipType = async function (id, name) {
     return await getById(id);
 };
 
+const getTypeById = async (id) => {
+    const type = await getById(id);
+
+    if (!type)
+        throw new HandlingError(404, "Type Not Found");
+
+    return type;
+};
+
 const validateName = async function (name) {
     name = name.replace(/\s/g, "");
     if (!name || name.length > 20 || name.length < 2)
@@ -84,5 +93,6 @@ module.exports = {
     getAllZipTypesInList,
     countAllTypes,
     getPaginatedTypes,
-    getTypesByName
+    getTypesByName,
+    getTypeById
 }

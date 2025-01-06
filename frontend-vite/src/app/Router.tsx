@@ -15,6 +15,7 @@ import PrivateUserProfile from "../pages/user/PrivateUserProfile.tsx";
 import Zips from "../pages/admin/tables/Zips.tsx";
 import ErrorIcon from '@mui/icons-material/Error';
 import DoDisturbIcon from '@mui/icons-material/DoDisturb';
+import TypePage from "../pages/types/TypePage.tsx";
 
 
 const AppRoutes = () => {
@@ -80,6 +81,10 @@ const AppRoutes = () => {
                 {
                     path: 'login',
                     element: <Login/>
+                },
+                {
+                    path: 'types/:id',
+                    element: <TypePage/>
                 },
                 {
                     path: 'register',
