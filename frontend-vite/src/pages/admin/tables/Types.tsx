@@ -81,20 +81,19 @@ const Types = () => {
                 types.splice(deleteType.index, 1);
                 setTypes([...types]);
                 showSnackbar('Successfully deleted a type!', 'success');
-            } catch(error) {
-                showSnackbar('Error', 'error');
+            } catch (error) {
+                showSnackbar('Error has occurred', 'error');
             }
         };
 
         const handleUpdate = async (id: number, name: string, index: number) => {
             await api.zipTypes.updateZipType(id, name)
                 .then(r => {
-                    if (r.status == 200) {
-                        types[index]["name"] = name;
-                        types[index]["date_of_modification"] = r.data.date_of_modification;
-                    } else {
-                        console.log();
-                    }
+                    types[index]["name"] = name;
+                    types[index]["date_of_modification"] = r.data.date_of_modification;
+                    showSnackbar('Successfully updated a type!', 'success');
+                }).catch(e => {
+                    showSnackbar('Error has occurred!', 'error');
                 });
         };
 
@@ -192,13 +191,19 @@ const Types = () => {
                                             {rowIndex === index && columnIndex === 1
                                                 ? <TextField
                                                     defaultValue={type.name}
-                                                    onBlur={(e) => handleUpdate(type.id, e.target.value, index)}
-                                                    // onKeyDown={(e) => {
-                                                    //     if (e.key === "Enter") {
-                                                    //         handleExit();
-                                                    //     }
-                                                    // }
+                                                    onBlur={(e) => {
+                                                        handleUpdate(type.id, e.target.value, index);
+                                                        handleExit();
+                                                    }}
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === "Enter") {
+                                                            e.preventDefault();
+                                                            handleUpdate(type.id, e.target.value, index);
+                                                            handleExit();
+                                                        }
+                                                    }}
                                                 />
+
                                                 : type.name
                                             }
                                         </TableCell>
@@ -301,7 +306,7 @@ const Types = () => {
                         setDeleteType({typeId: -1, index: -1});
                     }}
                     onCancel={() => setDeleteSubmit(false)}
-                ></ConfirmDialog>
+                />
             </div>
         )
     }

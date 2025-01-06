@@ -1,7 +1,7 @@
-const {countAllZips, create, getById, deleteById, getAllByName, getAllByUserId} = require('../repositories/zipRepository')
+const {countAllZips, create, getById, deleteById, getAllByName, getAllByUserId, getAll} = require('../repositories/zipRepository')
 const {HandlingError} = require("../handlers/errorHandler");
 const {getCountTypes} = require('../services/typesService');
-const {saveAll, getAllZipTypesByZipId, deleteAllZipTypesByZipId} = require('../services/zipTypesService');
+const {saveAll, deleteAllZipTypesByZipId} = require('../services/zipTypesService');
 const {getPaginatedByName} = require('../repositories/zipRepository');
 
 const getZipCount = async function () {
@@ -60,6 +60,10 @@ const getZipsByUserId = async (id) => {
     return await getAllByUserId(id);
 };
 
+const getAllZips = async () => {
+    return await getAll();
+}
+
 module.exports = {
     getZipCount,
     createZip,
@@ -67,5 +71,6 @@ module.exports = {
     deleteZipById,
     getPaginatedZips,
     getZipsByName,
-    getZipsByUserId
+    getZipsByUserId,
+    getAllZips
 };

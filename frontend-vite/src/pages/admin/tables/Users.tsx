@@ -13,21 +13,42 @@ import TablePaginationActions from "@mui/material/TablePagination/TablePaginatio
 import {Context} from "../../../main.tsx";
 import {useNavigate} from "react-router-dom";
 import BigTextEntry from "../../../components/enrties/BigTextEntry.tsx";
+import CustomSnackBar from "../../../components/textfields/CustomSnackBar.tsx";
+import ConfirmDialog from "../../../components/dialog/ConfirmDialog.tsx";
 
 interface User {
     id: number;
     nickname: string;
     email: string;
+    is_admin: string;
     date_of_creation: string;
     date_of_modification: string;
 }
+
+export interface ModifyData {
+    id: number;
+    index: number;
+}
+
 
 const Users = () => {
     const {store} = useContext(Context);
     const navigate = useNavigate();
     const [users, setUsers] = useState<User[]>([]);
+    const [modifyData, setModifyData] = useState<ModifyData>({
+        id: -1,
+        index: -1
+    });
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [snackbar, setSnackbar] = useState({
+        open: false,
+        message: '',
+        severity: 'success' as 'success' | 'info' | 'warning' | 'error',
+    });
+    const [deleteSubmit, setDeleteSubmit] = useState(false);
+    const [promoteSubmit, setPromoteSubmit] = useState(false);
+    const [demoteSubmit, setDemoteSubmit] = useState(false);
 
     useEffect(() => {
         if (!store.isAuth || !store.isAdmin()) {
@@ -56,28 +77,58 @@ const Users = () => {
 
     useEffect(() => {
         const fetch = async () => {
-            api.users.getAll()
+            await api.users.getAll()
                 .then((response: { data: React.SetStateAction<User[]>; }) => {
                     setUsers(response.data);
                 }).catch((err: Error) => {
-                console.error(`Error fetching types: ${err}`);
-            });
+                    console.error(`Error fetching types: ${err}`);
+                });
         }
         fetch();
     }, [])
 
-    const handleDelete = async (id: number, index: number) => {
-        await api.users.deleteById(id)
+    const showSnackbar = (message: string, severity: 'success' | 'info' | 'warning' | 'error') => {
+        setSnackbar({open: true, message, severity});
+    };
+
+    const handleCloseSnackbar = () => {
+        setSnackbar((prev) => ({...prev, open: false}));
+    };
+
+    const handleDelete = async () => {
+        await api.users.deleteById(modifyData.id)
             .then(r => {
                     if (r.status === 200) {
-                        users.splice(index, 1);
+                        users.splice(modifyData.index, 1);
                         setUsers([...users]);
-                    } else {
-                        //TODO alert
-                        console.log();
+                        showSnackbar('Successfully deleted a user!', 'success');
                     }
                 }
-            );
+            ).catch(e => {
+                showSnackbar('Error has occurred!', 'error');
+            });
+    };
+
+    const handlePromote = async () => {
+        await api.users.promote(modifyData.id)
+            .then(r => {
+                    users[modifyData.index]["is_admin"] = "Yes";
+                    showSnackbar('Successfully promoted a user!', 'success');
+                }
+            ).catch(e => {
+                showSnackbar('User is admin already!', 'error');
+            });
+    };
+
+    const handleDemote = async () => {
+        await api.users.demote(modifyData.id)
+            .then(r => {
+                    users[modifyData.index]["is_admin"] = "No";
+                    showSnackbar('Successfully demoted a user!', 'success');
+                }
+            ).catch(e => {
+                showSnackbar('User is not an admin already!', 'error');
+            });
     };
 
     return (
@@ -90,6 +141,7 @@ const Users = () => {
                             <TableCell>Id</TableCell>
                             <TableCell>Email</TableCell>
                             <TableCell>Nickname</TableCell>
+                            <TableCell>Admin</TableCell>
                             <TableCell>Date of creation</TableCell>
                             <TableCell>Date of modification</TableCell>
                         </TableRow>
@@ -110,18 +162,48 @@ const Users = () => {
                                     {user.nickname}
                                 </TableCell>
                                 <TableCell component="th" scope="row">
+                                    {user.is_admin}
+                                </TableCell>
+                                <TableCell component="th" scope="row">
                                     {user.date_of_creation}
                                 </TableCell>
                                 <TableCell>
                                     {user.date_of_modification}
                                 </TableCell>
-                                <TableCell component="th" scope="row">
-                                    <Button onClick={() => {
-                                        handleDelete(user.id, index);
-                                    }}>
-                                        Delete
-                                    </Button>
-                                </TableCell>
+                                {user.id !== store.user.id && (
+                                    <>
+                                        <TableCell component="th" scope="row">
+                                            <Button
+                                                onClick={() => {
+                                                    setModifyData({id: user.id, index: index});
+                                                    setDeleteSubmit(true);
+                                                }}
+                                            >
+                                                Delete
+                                            </Button>
+                                        </TableCell>
+                                        <TableCell component="th" scope="row">
+                                            <Button
+                                                onClick={() => {
+                                                    setModifyData({id: user.id, index: index});
+                                                    setPromoteSubmit(true);
+                                                }}
+                                            >
+                                                Promote
+                                            </Button>
+                                        </TableCell>
+                                        <TableCell component="th" scope="row">
+                                            <Button
+                                                onClick={() => {
+                                                    setModifyData({id: user.id, index: index});
+                                                    setDemoteSubmit(true);
+                                                }}
+                                            >
+                                                Demote
+                                            </Button>
+                                        </TableCell>
+                                    </>
+                                )}
                             </TableRow>
                         ))}
                         {emptyRows > 0 && (
@@ -154,6 +236,44 @@ const Users = () => {
                     </TableFooter>
                 </Table>
             </TableContainer>
+
+            <CustomSnackBar
+                open={snackbar.open}
+                message={snackbar.message}
+                severity={snackbar.severity}
+                onClose={handleCloseSnackbar}
+            />
+
+            <ConfirmDialog
+                open={deleteSubmit}
+                message={"Do you really want to delete a user?"}
+                onConfirm={() => {
+                    setDeleteSubmit(false);
+                    handleDelete();
+                    setModifyData({id: -1, index: -1});
+                }}
+                onCancel={() => setDeleteSubmit(false)}
+            />
+            <ConfirmDialog
+                open={promoteSubmit}
+                message={"Do you really want to promote a user?"}
+                onConfirm={() => {
+                    setPromoteSubmit(false);
+                    handlePromote();
+                    setModifyData({id: -1, index: -1});
+                }}
+                onCancel={() => setPromoteSubmit(false)}
+            />
+            <ConfirmDialog
+                open={demoteSubmit}
+                message={"Do you really want to demote a user?"}
+                onConfirm={() => {
+                    setDemoteSubmit(false);
+                    handleDemote();
+                    setModifyData({id: -1, index: -1});
+                }}
+                onCancel={() => setDemoteSubmit(false)}
+            />
         </div>
     );
 };

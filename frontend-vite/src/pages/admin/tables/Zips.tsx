@@ -15,6 +15,9 @@ import api from "../../../app/Api.ts";
 import {Context} from "../../../main.tsx";
 import {useNavigate} from "react-router-dom";
 import BigTextEntry from "../../../components/enrties/BigTextEntry.tsx";
+import {ModifyData} from "./Users.tsx";
+import CustomSnackBar from "../../../components/textfields/CustomSnackBar.tsx";
+import ConfirmDialog from "../../../components/dialog/ConfirmDialog.tsx";
 
 interface Zip {
     id: number;
@@ -30,6 +33,16 @@ const Zips = () => {
     const [zips, setZips] = useState<Zip[]>([]);
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [modifyData, setModifyData] = useState<ModifyData>({
+        id: -1,
+        index: -1
+    });
+    const [snackbar, setSnackbar] = useState({
+        open: false,
+        message: '',
+        severity: 'success' as 'success' | 'info' | 'warning' | 'error',
+    });
+    const [deleteSubmit, setDeleteSubmit] = useState(false);
 
     useEffect(() => {
         if (!store.isAuth || !store.isAdmin()) {
@@ -69,18 +82,24 @@ const Zips = () => {
         fetch();
     }, [])
 
-    const handleDelete = (id: number, index: number) => {
-        api.zips.deleteById(id)
+    const handleDelete = async () => {
+        await api.zips.deleteById(Number(modifyData.id))
             .then(r => {
-                    if (r.status === 200) {
-                        zips.splice(index, 1);
-                        setZips([...zips]);
-                    } else {
-                        //TODO alert
-                        console.log();
-                    }
+                    zips.splice(modifyData.index, 1);
+                    setZips([...zips]);
+                    showSnackbar('Successfully deleted a zip!', 'success');
                 }
-            );
+            ).catch(e => {
+                showSnackbar('Error has occurred!', 'error');
+            });
+    };
+
+    const showSnackbar = (message: string, severity: 'success' | 'info' | 'warning' | 'error') => {
+        setSnackbar({open: true, message, severity});
+    };
+
+    const handleCloseSnackbar = () => {
+        setSnackbar((prev) => ({...prev, open: false}));
     };
 
     return (
@@ -120,7 +139,8 @@ const Zips = () => {
                                 </TableCell>
                                 <TableCell component="th" scope="row">
                                     <Button onClick={() => {
-                                        handleDelete(zip.id, index);
+                                        setDeleteSubmit(true);
+                                        setModifyData({id: zip.id, index: index});
                                     }}>
                                         Delete
                                     </Button>
@@ -157,6 +177,24 @@ const Zips = () => {
                     </TableFooter>
                 </Table>
             </TableContainer>
+
+            <CustomSnackBar
+                open={snackbar.open}
+                message={snackbar.message}
+                severity={snackbar.severity}
+                onClose={handleCloseSnackbar}
+            />
+
+            <ConfirmDialog
+                open={deleteSubmit}
+                message={"Do you really want to delete a zip?"}
+                onConfirm={() => {
+                    setDeleteSubmit(false);
+                    handleDelete();
+                    setModifyData({id: -1, index: -1});
+                }}
+                onCancel={() => setDeleteSubmit(false)}
+            />
         </div>
     );
 };

@@ -1,4 +1,4 @@
-const {findRolesByUserId, save, deleteByUserId, userHasRole, deletePos} = require("../repositories/userRoleRepository");
+const {findRolesByUserId, save, deleteByUserId, userHasRole, deletePos, findEntriesByIds} = require("../repositories/userRoleRepository");
 const {getByName, findByIds} = require("../repositories/roleRepository");
 const {HandlingError} = require("../handlers/errorHandler");
 
@@ -12,7 +12,7 @@ const saveUserIdRole = async (userId, roleName) => {
     if (roles.some(x => x.name === roleName))
         throw new HandlingError(409, "User already has this role.");
 
-    return save(userId, roleName);
+    await save(userId, roleName);
 };
 
 const deleteUserIdRole = async (userId, roleName) => {

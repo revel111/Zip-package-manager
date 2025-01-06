@@ -45,8 +45,8 @@ const getPaginatedByName = async (name, pageSize, offset) => {
 const getAllByName = async (name) => {
     const connection = await createConnection();
 
-    [rows] = await connection.query(`SELECT z.id, z.name
-                                     FROM zips z
+    [rows] = await connection.query(`SELECT id, name
+                                     FROM zips
                                      WHERE name LIKE ?`, [`%${name}%`]);
 
     return rows;

@@ -8,7 +8,7 @@ const {
     countTypes,
     getAllInList,
     countAll,
-    getAllPaginated
+    getAllPaginated, getAllByName
 } = require("../repositories/typesRepository");
 const {HandlingError} = require('../handlers/errorHandler');
 const {deleteAll} = require('../services/zipTypesService');
@@ -71,6 +71,10 @@ const getPaginatedTypes = async (page, pageSize) => {
     };
 };
 
+const getTypesByName = async (name) => {
+    return await getAllByName(name);
+}
+
 module.exports = {
     getAllZipTypes,
     createZipType,
@@ -79,5 +83,6 @@ module.exports = {
     getCountTypes,
     getAllZipTypesInList,
     countAllTypes,
-    getPaginatedTypes
+    getPaginatedTypes,
+    getTypesByName
 }

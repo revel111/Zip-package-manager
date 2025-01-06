@@ -82,6 +82,16 @@ const getAllPaginated = async (pageSize, offset) => {
     return rows;
 };
 
+const getAllByName = async (name) => {
+    const connection = await createConnection();
+
+    [rows] = await connection.query(`SELECT id, name
+                                     FROM zips 
+                                     WHERE name LIKE ?`, [`%${name}%`]);
+
+    return rows;
+};
+
 module.exports = {
     getById,
     getAll,
@@ -92,5 +102,6 @@ module.exports = {
     countTypes,
     getAllInList,
     countAll,
-    getAllPaginated
+    getAllPaginated,
+    getAllByName
 };

@@ -9,8 +9,18 @@ const countAllUsers = async function () {
 
 const getAll = async function () {
     const connection = await createConnection();
-    const [rows] = await connection.query(`SELECT id, nickname, email, date_of_creation, date_of_modification
-                                           FROM users`)
+    const [rows] = await connection.query(`
+        SELECT u.id,
+               u.nickname,
+               u.email,
+               u.date_of_creation,
+               u.date_of_modification,
+               IF(MAX(r.name = 'admin'), 'Yes', 'No') AS is_admin
+        FROM users u
+                 LEFT JOIN users_roles ur ON u.id = ur.user_id
+                 LEFT JOIN roles r ON ur.role_id = r.id
+        GROUP BY u.id, u.nickname, u.email, u.date_of_creation, u.date_of_modification
+    `);
     return rows;
 };
 

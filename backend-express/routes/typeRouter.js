@@ -4,7 +4,7 @@ const {
     createZipType,
     deleteZipType,
     updateZipType,
-    getPaginatedTypes
+    getPaginatedTypes, getTypesByName
 } = require("../services/typesService")
 const authHandler = require("../handlers/authHandler");
 const adminHandler = require("../handlers/adminHandler");
@@ -15,6 +15,12 @@ router.get('/pages', authHandler, adminHandler, async (req, res) => {
     const pageSize = parseInt(req.query.pageSize) || 10;
 
     res.status(200).json(await getPaginatedTypes(page, pageSize));
+});
+
+router.get('/names', async (req, res) => {
+    const name = req.query.name || '';
+
+    res.status(200).json(await getTypesByName(name));
 });
 
 router.get('/', authHandler, adminHandler, async (req, res) => {
