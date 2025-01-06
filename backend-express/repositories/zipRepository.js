@@ -17,7 +17,7 @@ const create = async function (name, fileName, zip, userId, description) {
 
 const getById = async (id) => {
     const connection = await createConnection();
-    const [rows] = await connection.execute(`SELECT id, name, user_id, file_name, date_of_creation, date_of_modification
+    const [rows] = await connection.execute(`SELECT id, name, description, zip_file, user_id, file_name, date_of_creation, date_of_modification
                                              FROM zips
                                              WHERE id = ?`, [id]);
 

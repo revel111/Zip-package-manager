@@ -58,7 +58,7 @@ const TypePage = () => {
             <Paper elevation={3} sx={{padding: 4, marginBottom: 4, position: "relative"}}>
                 <Box sx={{display: "flex", justifyContent: "space-between"}}>
                     <Box>
-                        <Typography variant="h4" fontWeight="bold" gutterBottom>
+                        <Typography variant="h4" gutterBottom>
                             {type.name}
                         </Typography>
                         <Typography variant="body2" color="textSecondary" gutterBottom>
@@ -72,7 +72,7 @@ const TypePage = () => {
             </Paper>
 
             <Paper elevation={3} sx={{padding: 4}}>
-                <Typography variant="h5" fontWeight="bold" gutterBottom>
+                <Typography variant="h5" gutterBottom>
                     Published Zips
                 </Typography>
                 <Divider sx={{marginY: 2}}/>

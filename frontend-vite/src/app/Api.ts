@@ -85,7 +85,8 @@ const api = {
         getTypesById: (id: number) => apiInstance.get(`/zips/${id}/types`),
         getById: (id: number) => apiInstance.get(`/zips/${id}`),
         deleteById: (id: number) => apiInstance.delete(`/zips/${id}`),
-        getAll: () => apiInstance.get(`/zips`)
+        getAll: () => apiInstance.get(`/zips`),
+        download: (id: number) => apiInstance.get(`/zips/${id}/download`),
     },
     users: {
         getById: (id: number) => apiInstance.get(`/users/${id}`),

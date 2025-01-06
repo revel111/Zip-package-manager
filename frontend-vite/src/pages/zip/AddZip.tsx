@@ -78,7 +78,7 @@ const AddZip: React.FC = () => {
         } else if (zip.description.length < 20 || zip.description.length > 200) {
             newErrors.description = "Description should be 20 to 200 symbols.";
         }
-        //
+
         // if (!zip.file)
         //     newErrors.fileName = "No file uploaded";
 
@@ -154,9 +154,8 @@ const AddZip: React.FC = () => {
                 <Autocomplete
                     multiple
                     options={types}
-                    // Display the name in the dropdown but use id as the unique identifier
                     getOptionLabel={(option) => `${option.name}`}
-                    isOptionEqualToValue={(option, value) => option.id === value.id} // Match by id
+                    isOptionEqualToValue={(option, value) => option.id === value.id}
                     onInputChange={(_event, newInputValue: string) => setSearchTerm(newInputValue)}
                     onChange={handleTypeChange}
                     renderInput={(params) => (

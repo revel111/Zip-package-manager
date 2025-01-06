@@ -1,11 +1,13 @@
 import {useParams, useNavigate, Link} from "react-router-dom";
 import {useEffect, useState} from "react";
+import {Card, CardContent, CardHeader, Typography, Box, Chip, Button, Stack} from "@mui/material";
 import api from "../../app/Api.ts";
-import {Type} from '../admin/tables/Types.tsx';
+import {Type} from "../admin/tables/Types.tsx";
 
 export interface ViewZip {
     id: number;
     name: string;
+    description: string; // Added description
     user_id: number;
     file_name: string;
     date_of_creation: string;
@@ -28,79 +30,133 @@ const ZipPage = () => {
     const [user, setUser] = useState<User>();
 
     useEffect(() => {
-        const fetch = async () => {
-            await api.zips.getById(Number(id))
-                .then(response => {
-                    setZip(response.data);
-                })
-                .catch((err: Error) => {
-                    console.error(`Error fetching zip: ${err}`);
-                    navigate('/error');
-                    return;
-                });
+        const fetchZip = async () => {
+            try {
+                const response = await api.zips.getById(Number(id));
+                setZip(response.data);
+            } catch (err) {
+                console.error(`Error fetching zip: ${err}`);
+                navigate('/error');
+            }
         };
-
-        fetch();
+        fetchZip();
     }, [id, navigate]);
 
     useEffect(() => {
-        const fetch = async () => {
-            await api.zips.getTypesById(Number(id))
-                .then(response => {
-                    setTypes(response.data);
-                })
-                .catch((err: Error) => {
-                    console.error(`Error fetching types: ${err}`);
-                });
+        const fetchTypes = async () => {
+            try {
+                const response = await api.zips.getTypesById(Number(id));
+                setTypes(response.data);
+            } catch (err) {
+                console.error(`Error fetching types: ${err}`);
+            }
         };
-        fetch();
+        fetchTypes();
     }, [id]);
 
     useEffect(() => {
-        const fetch = async () => {
+        const fetchUser = async () => {
             if (zip?.user_id) {
-                await api.users.getById(zip.user_id)
-                    .then(response => {
-                        setUser(response.data);
-                    })
-                    .catch((err: Error) => {
-                        console.error(`Error fetching user: ${err}`);
-                    });
+                try {
+                    const response = await api.users.getById(zip.user_id);
+                    setUser(response.data);
+                } catch (err) {
+                    console.error(`Error fetching user: ${err}`);
+                }
             }
         };
-
-        fetch();
+        fetchUser();
     }, [zip?.user_id]);
 
+    const handleDownload = async () => {
+        await api.zips.download(Number(id))
+            .then(r => {
+                const blob = new Blob([r.data], {type: 'application/zip'});
+                const zipURL = window.URL.createObjectURL(blob);
+                const tempLink = document.createElement('a');
+                tempLink.href = zipURL;
+
+                tempLink.setAttribute('download', zip?.file_name);
+                tempLink.click();
+
+                window.URL.revokeObjectURL(zipURL);
+            }).catch(e => {
+                console.log(e);
+            });
+    };
+
     return (
-        <div>
-            <div>
-                <h1>Zip:</h1>
-                {zip?.name} <br/>
-            </div>
-            <div>
-                {types && types.length > 0 ? (
-                    <>
-                        <h1>Types</h1>
-                        {types.map((x) => (
-                            <div key={x.id}>{x.id} {x.name}</div>
-                        ))}
-                    </>
-                ) : (
-                    <div>No types available</div>
-                )}
-            </div>
-            <div>
-                {user ? (
-                    <>
-                        <h1>User:</h1>
-                        <Link to={`/users/${user?.id}`}>{user?.nickname}</Link>
-                    </>
-                ) : (
-                    <div>User account was deleted.</div>
-                )}
-            </div>
-        </div>);
+        <Box sx={{maxWidth: 800, margin: "auto", padding: 4}}>
+            <Card variant="outlined" sx={{marginBottom: 3}}>
+                <CardHeader title="Zip Details"/>
+                <CardContent>
+                    <Typography variant="h5" gutterBottom>
+                        {zip?.name}
+                    </Typography>
+                    {zip?.description && (
+                        <Typography variant="body1" gutterBottom>
+                            {zip.description}
+                        </Typography>
+                    )}
+                    <Typography variant="body2" color="textSecondary">
+                        Created on: {zip?.date_of_creation}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary">
+                        Last Modified: {zip?.date_of_modification}
+                    </Typography>
+                    {zip?.file_name && (
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            sx={{mt: 2}}
+                            onClick={handleDownload}
+                        >
+                            Download File
+                        </Button>
+                    )}
+                </CardContent>
+            </Card>
+
+            <Card variant="outlined" sx={{marginBottom: 3}}>
+                <CardHeader title="Types"/>
+                <CardContent>
+                    {types && types.length > 0 ? (
+                        <Stack direction="row" spacing={1} flexWrap="wrap">
+                            {types.map((type) => (
+                                <Chip
+                                    key={type.id}
+                                    label={`${type.name}`}
+                                    color="primary"
+                                    sx={{mb: 1}}
+                                />
+                            ))}
+                        </Stack>
+                    ) : (
+                        <Typography variant="body2" color="textSecondary">
+                            No types available.
+                        </Typography>
+                    )}
+                </CardContent>
+            </Card>
+
+            <Card variant="outlined">
+                <CardHeader title="Owner"/>
+                <CardContent>
+                    {user ? (
+                        <Typography variant="h6">
+                            <Link to={`/users/${user.id}`} style={{textDecoration: "none"}}>
+                                {user.nickname}
+                            </Link>
+                        </Typography>
+                    ) : (
+                        <Typography variant="body2" color="textSecondary">
+                            User account was deleted.
+                        </Typography>
+                    )}
+                </CardContent>
+            </Card>
+        </Box>
+    );
 };
 
 export default ZipPage;

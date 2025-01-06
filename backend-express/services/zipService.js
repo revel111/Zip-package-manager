@@ -91,6 +91,12 @@ const getAllZipsByZipType = async (zipTypeId) => {
     return getAllByZipType(zipTypeId);
 };
 
+const download = async (id) => {
+    const zip = await getZipById(id);
+
+    return {zip_file: zip.zip_file, file_name: zip.file_name};
+};
+
 module.exports = {
     getZipCount,
     createZip,
@@ -100,5 +106,6 @@ module.exports = {
     getZipsByName,
     getZipsByUserId,
     getAllZips,
-    getAllZipsByZipType
+    getAllZipsByZipType,
+    download
 };
