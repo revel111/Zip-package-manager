@@ -8,7 +8,7 @@ import {Context} from "../../main.tsx";
 export interface ViewZip {
     id: number;
     name: string;
-    description: string; // Added description
+    description: string;
     user_id: number;
     file_name: string;
     date_of_creation: string;
