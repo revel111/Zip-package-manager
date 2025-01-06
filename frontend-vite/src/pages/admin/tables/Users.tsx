@@ -12,6 +12,7 @@ import {
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import {Context} from "../../../main.tsx";
 import {useNavigate} from "react-router-dom";
+import BigTextEntry from "../../../components/enrties/BigTextEntry.tsx";
 
 interface User {
     id: number;
@@ -81,7 +82,7 @@ const Users = () => {
 
     return (
         <div>
-            <h1>Users</h1>
+            <BigTextEntry text={"Users"} align={"center"}/>
             <TableContainer component={Paper}>
                 <Table sx={{minWidth: 200}} aria-label="custom pagination table">
                     <TableHead>

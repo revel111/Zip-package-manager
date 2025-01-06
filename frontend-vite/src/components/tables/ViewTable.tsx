@@ -53,9 +53,6 @@ const ViewTable = <T, >({
         setPage(0);
     };
 
-    const emptyRows =
-        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
-
     const renderCellContent = (
         value: T[keyof T],
     ): React.ReactNode => {
@@ -90,7 +87,7 @@ const ViewTable = <T, >({
                             ))}
                             <TableCell align="center">
                                 <Button
-                                    onClick={() => navigate(`${link}/${row.id}`)} // Navigate using row.id
+                                    onClick={() => navigate(`${link}/${row.id}`)}
                                     variant="contained"
                                     color="primary"
                                 >

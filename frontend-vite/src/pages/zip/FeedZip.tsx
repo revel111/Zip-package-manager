@@ -2,10 +2,17 @@ import {Link, useSearchParams} from "react-router-dom";
 import {Pagination, PaginationItem, Box, CardContent, Typography} from "@mui/material";
 import {useEffect, useState} from "react";
 import api from "../../app/Api.ts";
-import SearchBar, {Zip} from "../../components/home/SearchBar.tsx";
+import SearchBar from "../../components/home/SearchBar.tsx";
+import BigTextEntry from "../../components/enrties/BigTextEntry.tsx";
+
+interface PageZip {
+    id: number;
+    name: string;
+    description: string;
+}
 
 interface Page {
-    rows: Zip[];
+    rows: PageZip[];
     totalPages: number;
     totalElements: number;
     page: number;
@@ -82,21 +89,14 @@ const FeedZip = () => {
                                             fontSize: '1rem',
                                         }}
                                     >
-                                        Additional details or descriptions could go here.
+                                        {x.description}
                                     </Typography>
                                 </CardContent>
                             </Box>
                         </Link>
                     ))
                 ) : (
-                    <Typography
-                        variant="h4"
-                        sx={{
-                            color: '#555',
-                        }}
-                    >
-                        Results wasn't found.
-                    </Typography>
+                    <BigTextEntry text={"Results wasn't found."}/>
                 )}
             </Box>
 

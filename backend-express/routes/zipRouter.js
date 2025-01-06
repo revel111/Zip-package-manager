@@ -4,7 +4,6 @@ const {createZip, getZipById, deleteZipById, getPaginatedZips} = require('../ser
 const {getAllTypesByZipId} = require("../services/zipTypesService");
 const {getAllByName} = require("../repositories/zipRepository");
 const authHandler = require("../handlers/authHandler");
-// const adminHandler = require("../handlers/adminHandler");
 const router = express.Router();
 
 const storage = multer.memoryStorage();

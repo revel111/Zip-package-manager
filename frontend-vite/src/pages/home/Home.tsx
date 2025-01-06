@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from "react";
-import {Box, Typography} from "@mui/material";
+import {Box} from "@mui/material";
 import api from "../../app/Api.ts";
 import SearchBar from "../../components/home/SearchBar.tsx";
 import Frame from "../../components/home/Frame.tsx";
+import BigTextEntry from "../../components/enrties/BigTextEntry.tsx";
 
 interface Counts {
     userCount: number;
@@ -39,11 +40,7 @@ const Home = () => {
                 textAlign: "center",
             }}
         >
-            <Typography
-                variant="h4"
-            >
-                Upload and download zips!
-            </Typography>
+            <BigTextEntry text={"Upload and download zips!"} align={"center"}/>
 
             <SearchBar/>
 

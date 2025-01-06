@@ -60,7 +60,7 @@ const ZipPage = () => {
     useEffect(() => {
         const fetch = async () => {
             if (zip?.user_id) {
-                api.users.getById(zip.user_id)
+                await api.users.getById(zip.user_id)
                     .then(response => {
                         setUser(response.data);
                     })
@@ -69,6 +69,8 @@ const ZipPage = () => {
                     });
             }
         };
+
+        fetch();
     }, [zip?.user_id]);
 
     return (

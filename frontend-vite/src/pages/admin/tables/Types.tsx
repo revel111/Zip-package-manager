@@ -23,6 +23,11 @@ interface Name {
     name: string;
 }
 
+interface Delete {
+    typeId: number;
+    index: number;
+}
+
 const Types = () => {
         const {store} = useContext(Context);
         const navigate = useNavigate();
@@ -35,6 +40,7 @@ const Types = () => {
         const [newName, setNewName] = useState<Name>({
             name: ''
         });
+        const [deleteType, setDeleteType] = useState<Delete>({typeId: -1, index: -1});
         const [nameErrors, setNameErrors] = useState<Partial<Name>>({});
         const [snackbar, setSnackbar] = useState({
             open: false,
@@ -42,6 +48,7 @@ const Types = () => {
             severity: 'success' as 'success' | 'info' | 'warning' | 'error',
         });
         const [nameSubmitOpen, setNameSubmitOpen] = useState(false);
+        const [deleteSubmit, setDeleteSubmit] = useState(false);
 
         useEffect(() => {
             if (!store.isAuth || !store.isAdmin()) {
@@ -68,18 +75,15 @@ const Types = () => {
             setPage(0);
         };
 
-        const handleDelete = async (id: number, index: number) => {
-            await api.zipTypes.deleteZipType(id)
-                .then(r => {
-                        if (r.status === 200) {
-                            types.splice(index, 1);
-                            setTypes([...types]);
-                        } else {
-                            //TODO alert
-                            console.log();
-                        }
-                    }
-                );
+        const handleDelete = async () => {
+            try {
+                await api.zipTypes.deleteZipType(deleteType.typeId);
+                types.splice(deleteType.index, 1);
+                setTypes([...types]);
+                showSnackbar('Successfully deleted a type!', 'success');
+            } catch(error) {
+                showSnackbar('Error', 'error');
+            }
         };
 
         const handleUpdate = async (id: number, name: string, index: number) => {
@@ -138,9 +142,9 @@ const Types = () => {
                     await api.zipTypes.createZipType(newName.name);
                     setAddDialogOpen(false);
                     setNewName({name: ''})
-                    showSnackbar('Successfully added a new type!', 'error');
+                    showSnackbar('Successfully added a new type!', 'success');
                 } catch (error) {
-                    showSnackbar('Such type already exists!', 'success');
+                    showSnackbar('Such type already exists!', 'error');
                 }
         };
 
@@ -154,7 +158,7 @@ const Types = () => {
 
         return (
             <div>
-                <BigTextEntry text={"Types"}/>
+                <BigTextEntry text={"Types"} align={"center"}/>
                 <Button variant="contained"
                         color="primary"
                         onClick={() => setAddDialogOpen(true)}>
@@ -206,7 +210,8 @@ const Types = () => {
                                         </TableCell>
                                         <TableCell component="th" scope="row">
                                             <Button onClick={() => {
-                                                handleDelete(type.id, index);
+                                                setDeleteType({typeId: type.id, index: index})
+                                                setDeleteSubmit(true);
                                             }}>
                                                 Delete
                                             </Button>
@@ -287,6 +292,16 @@ const Types = () => {
                     severity={snackbar.severity}
                     onClose={handleCloseSnackbar}
                 />
+                <ConfirmDialog
+                    open={deleteSubmit}
+                    message={"Do you really want to delete a new type?"}
+                    onConfirm={() => {
+                        setDeleteSubmit(false);
+                        handleDelete();
+                        setDeleteType({typeId: -1, index: -1});
+                    }}
+                    onCancel={() => setDeleteSubmit(false)}
+                ></ConfirmDialog>
             </div>
         )
     }

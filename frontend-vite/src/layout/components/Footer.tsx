@@ -6,17 +6,15 @@ const Footer = () => {
             sx={{
                 mt: 4,
                 py: 2,
-                px: 3,
                 textAlign: "center",
                 justifyContent: "center",
                 alignItems: "center",
-                bgcolor: "background.default",
-                color: "text.secondary",
+                color: "#555",
                 boxShadow: 1,
                 mb: 2
             }}
         >
-            <Typography variant="body2" sx={{fontSize: "0.875rem"}}>
+            <Typography variant="body2" sx={{fontSize: "0.9rem"}}>
                 Made by {""}
                 <Link
                     href="https://github.com/revel111"

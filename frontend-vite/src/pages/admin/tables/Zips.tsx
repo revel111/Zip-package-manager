@@ -14,6 +14,7 @@ import TablePaginationActions from "@mui/material/TablePagination/TablePaginatio
 import api from "../../../app/Api.ts";
 import {Context} from "../../../main.tsx";
 import {useNavigate} from "react-router-dom";
+import BigTextEntry from "../../../components/enrties/BigTextEntry.tsx";
 
 interface Zip {
     id: number;
@@ -84,6 +85,7 @@ const Zips = () => {
 
     return (
         <div>
+            <BigTextEntry text={"Zips"} align={"center"}/>
             <TableContainer component={Paper}>
                 <Table sx={{minWidth: 200}} aria-label="custom pagination table">
                     <TableHead>

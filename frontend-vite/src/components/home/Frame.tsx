@@ -1,15 +1,12 @@
-import {Card, CardContent, Typography} from "@mui/material";
+import {Card, CardContent} from "@mui/material";
+import BigTextEntry from "../enrties/BigTextEntry.tsx";
 
 const Frame = ({value, name}: { value: number | null | undefined, name: string }) => {
     return (
         <Card sx={{width: 200, padding: 2, textAlign: "center"}}>
             <CardContent>
-                <Typography variant="h4" sx={{fontWeight: 'bold'}}>
-                    {value ?? "Loading..."}
-                </Typography>
-                <Typography variant="subtitle1" sx={{marginTop: 1}}>
-                    {name}
-                </Typography>
+                <BigTextEntry text={value ?? "Loading..."} align={"center"}/>
+                <BigTextEntry text={name} align={"center"}/>
             </CardContent>
         </Card>
     );

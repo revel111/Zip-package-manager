@@ -34,8 +34,8 @@ const deleteById = async (id) => {
 const getPaginatedByName = async (name, pageSize, offset) => {
     const connection = await createConnection();
 
-    const [rows] = await connection.query(`SELECT z.id, z.name
-                                           FROM zips z
+    const [rows] = await connection.query(`SELECT id, name, description
+                                           FROM zips
                                            WHERE name LIKE ?
                                            LIMIT ? OFFSET ?`, [`%${name}%`, pageSize, offset]);
 
