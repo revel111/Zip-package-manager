@@ -1,8 +1,9 @@
 import {useParams, useNavigate, Link} from "react-router-dom";
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {Card, CardContent, CardHeader, Typography, Box, Chip, Button, Stack} from "@mui/material";
 import api from "../../app/Api.ts";
 import {Type} from "../admin/tables/Types.tsx";
+import {Context} from "../../main.tsx";
 
 export interface ViewZip {
     id: number;
@@ -24,6 +25,7 @@ export interface User {
 
 const ZipPage = () => {
     const navigate = useNavigate();
+    const {store} = useContext(Context);
     const {id} = useParams();
     const [zip, setZip] = useState<ViewZip>();
     const [types, setTypes] = useState<Type[]>([]);
@@ -104,16 +106,25 @@ const ZipPage = () => {
                     <Typography variant="body2" color="textSecondary">
                         Last Modified: {zip?.date_of_modification}
                     </Typography>
-                    {zip?.file_name && (
+
+                    <Stack direction="row" spacing={2} sx={{mt: 2}}>
                         <Button
                             variant="contained"
                             color="primary"
-                            sx={{mt: 2}}
                             onClick={handleDownload}
                         >
                             Download File
                         </Button>
-                    )}
+
+                        {store.user.id === zip?.user_id && (
+                            <Button
+                                variant="contained"
+                                color="primary"
+                            >
+                                Modify
+                            </Button>
+                        )}
+                    </Stack>
                 </CardContent>
             </Card>
 

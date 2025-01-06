@@ -105,7 +105,6 @@ VALUES ('Adventure in the Cloud', 'A thrilling zip file packed with cloud-based 
        ('Time Traveler’s Vault', 'Unlock the secrets of time travel with this vintage archive.', 2,
         'time_travel_vault.zip');
 
-
 INSERT INTO zip_types (zip_id, type_id)
 VALUES (1, 1),
        (1, 2),
