@@ -49,9 +49,10 @@ const ModifyZip: React.FC = () => {
                     setZip(response.data);
 
                     const typesResponse = await api.zips.getTypesById(Number(id));
+                    console.log('Fetched types:', typesResponse.data);
                     setZip((prevState) => ({
                         ...prevState,
-                        types: typesResponse.data,
+                        types: typesResponse.data.map(x => x.id),
                     }));
                 } catch (err) {
                     console.error(`Error fetching zip: ${err}`);
@@ -61,6 +62,8 @@ const ModifyZip: React.FC = () => {
         };
         fetchZip();
     }, [id, navigate]);
+
+    console.log(zip);
 
     useEffect(() => {
         const fetch = async () => {
@@ -162,7 +165,7 @@ const ModifyZip: React.FC = () => {
                 />
                 <Autocomplete
                     multiple
-                    options={types.filter(type => type.name.toLowerCase().includes(searchTerm.toLowerCase()))}
+                    options={types}
                     getOptionLabel={(option) => option.name}
                     isOptionEqualToValue={(option, value) => option.id === value.id}
                     onInputChange={(_event, newInputValue: string) => setSearchTerm(newInputValue)}
