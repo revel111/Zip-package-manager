@@ -87,6 +87,21 @@ const api = {
         deleteById: (id: number) => apiInstance.delete(`/zips/${id}`),
         getAll: () => apiInstance.get(`/zips`),
         download: (id: number) => apiInstance.get(`/zips/${id}/download`),
+        update: (name: string, description: string, types: number[], file: File | null, fileName: string, id: number) => {
+            const formData = new FormData();
+
+            formData.append('name', name);
+            formData.append('description', description);
+            formData.append('types', JSON.stringify(types));
+            formData.append('fileName', fileName);
+            formData.append('file', file);
+
+            return apiInstance.put(`/zips/${id}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+        }
     },
     users: {
         getById: (id: number) => apiInstance.get(`/users/${id}`),

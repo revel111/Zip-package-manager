@@ -6,11 +6,12 @@ const {
     deleteZipById,
     getPaginatedZips,
     getAllZips,
-    download
+    download, updateZip
 } = require('../services/zipService');
 const {getAllTypesByZipId} = require("../services/zipTypesService");
 const {getAllByName} = require("../repositories/zipRepository");
 const authHandler = require("../handlers/authHandler");
+const {HandlingError} = require("../handlers/errorHandler");
 const router = express.Router();
 
 const storage = multer.memoryStorage();
@@ -20,7 +21,13 @@ router.post('/', authHandler, upload.single('file'), async (req, res) => {
     const {name, fileName, description} = req.body;
     let types = req.body.types;
     types = JSON.parse(types);
-    const zip = req.file.buffer;
+    let zip;
+
+    try {
+        zip = req.file.buffer;
+    } catch (e) {
+        throw new HandlingError(400, "No zip file.");
+    }
     const userId = req.user.id;
 
     res.status(200).send(await createZip(name, fileName, zip, types, userId, description));
@@ -63,6 +70,21 @@ router.get('/:id', async (req, res) => {
 
 router.delete('/:id', authHandler, async (req, res) => {
     res.status(200).send(await deleteZipById(req.params.id));
+});
+
+router.put('/:id', authHandler, upload.single('file'), async (req, res) => {
+    const {name, fileName, description} = req.body;
+    let types = req.body.types;
+    types = JSON.parse(types);
+    let zip;
+    try {
+        zip = req.file.buffer;
+    } catch (e) {
+        throw new HandlingError(400, "No zip file.");
+    }
+    const id = Number(req.params.id);
+
+    res.status(200).json(await updateZip(name, fileName, zip, types, description, id));
 });
 
 module.exports = router;

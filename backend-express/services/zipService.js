@@ -6,7 +6,7 @@ const {
     getAllByName,
     getAllByUserId,
     getAll,
-    getAllByZipType
+    getAllByZipType, update
 } = require('../repositories/zipRepository')
 const {HandlingError} = require("../handlers/errorHandler");
 const {getCountTypes} = require('../services/typesService');
@@ -19,7 +19,7 @@ const getZipCount = async function () {
 
 const createZip = async (name, fileName, zip, types, userId, description) => {
     validateName(name);
-
+    validateDescription(description);
     validateZip(zip);
 
     await validateTypes(types);
@@ -35,6 +35,11 @@ const createZip = async (name, fileName, zip, types, userId, description) => {
 const validateName = (name) => {
     if (!name || name.length > 20 || name.length < 2)
         throw new HandlingError(400, 'Bad name was provided.');
+};
+
+const validateDescription = (description) => {
+    if (!description || description.length > 200 || description.length < 20)
+        throw new HandlingError(400, 'Bad description was provided.');
 };
 
 const validateZip = (zip) => {
@@ -97,6 +102,22 @@ const download = async (id) => {
     return {zip_file: zip.zip_file, file_name: zip.file_name};
 };
 
+const updateZip = async (name, fileName, zip, types, description, id) => {
+    await getZipById(id);
+
+    validateName(name);
+    validateDescription(description);
+    validateZip(zip);
+
+    await validateTypes(types);
+    await deleteAllZipTypesByZipId(id);
+
+    if (types)
+        await saveAll(types, id);
+
+    await update(name, fileName, zip, description, id);
+};
+
 module.exports = {
     getZipCount,
     createZip,
@@ -107,5 +128,6 @@ module.exports = {
     getZipsByUserId,
     getAllZips,
     getAllZipsByZipType,
-    download
+    download,
+    updateZip
 };

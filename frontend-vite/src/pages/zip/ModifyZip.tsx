@@ -3,25 +3,15 @@ import api from "../../app/Api.ts";
 import {Autocomplete, Box, Button, TextField, Typography} from "@mui/material";
 import BigTextEntry from "../../components/enrties/BigTextEntry.tsx";
 import {Context} from "../../main.tsx";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import CustomSnackBar from "../../components/textfields/CustomSnackBar.tsx";
+import {Zip} from "./AddZip.tsx";
+import {Type} from "../admin/tables/Types.tsx";
 
-interface Type {
-    id: number;
-    name: string;
-}
-
-export interface Zip {
-    name: string;
-    description: string;
-    fileName: string;
-    file: File | null;
-    types: number[];
-}
-
-const AddZip: React.FC = () => {
+const ModifyZip: React.FC = () => {
     const {store} = useContext(Context);
     const navigate = useNavigate();
+    const {id} = useParams();
     const [errors, setErrors] = useState<Partial<Zip>>({});
     const [types, setTypes] = useState<Type[]>([]);
     const [searchTerm, setSearchTerm] = useState<string>('');
@@ -48,9 +38,29 @@ const AddZip: React.FC = () => {
     };
 
     useEffect(() => {
-        if (!store.isAuth)
-            navigate("/login");
+        if (!store.isAuth) navigate("/login");
     }, [navigate, store.isAuth]);
+
+    useEffect(() => {
+        const fetchZip = async () => {
+            if (id) {
+                try {
+                    const response = await api.zips.getById(Number(id));
+                    setZip(response.data);
+
+                    const typesResponse = await api.zips.getTypesById(Number(id));
+                    setZip((prevState) => ({
+                        ...prevState,
+                        types: typesResponse.data,
+                    }));
+                } catch (err) {
+                    console.error(`Error fetching zip: ${err}`);
+                    navigate('/error');
+                }
+            }
+        };
+        fetchZip();
+    }, [id, navigate]);
 
     useEffect(() => {
         const fetch = async () => {
@@ -60,7 +70,7 @@ const AddZip: React.FC = () => {
                 }).catch((err: Error) => {
                     console.error(`Error fetching types: ${err}`);
                 });
-        }
+        };
         fetch();
     }, [searchTerm]);
 
@@ -70,7 +80,7 @@ const AddZip: React.FC = () => {
         if (!zip.name) {
             newErrors.name = "Name is required";
         } else if (zip.name.length < 2 || zip.name.length > 20) {
-            newErrors.name = "Name should be 2 to 10 symbols.";
+            newErrors.name = "Name should be 2 to 20 symbols.";
         }
 
         if (!zip.description) {
@@ -78,9 +88,6 @@ const AddZip: React.FC = () => {
         } else if (zip.description.length < 20 || zip.description.length > 200) {
             newErrors.description = "Description should be 20 to 200 symbols.";
         }
-
-        // if (!zip.file)
-        //     newErrors.fileName = "No file uploaded";
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -112,14 +119,16 @@ const AddZip: React.FC = () => {
         }));
     };
 
-    const upload = async () => {
+    const selectedTypes = zip.types ? types.filter((type) => zip.types.includes(type.id)) : [];
+
+    const updateZip = async () => {
         if (validate()) {
-            await api.zips.createZip(zip.name, zip.description, zip.types, zip.file, zip.fileName)
+            await api.zips.update(zip.name, zip.description, zip.types, zip.file, zip.fileName, Number(id))
                 .then(r => {
-                    navigate(`/zips/${r.data.id}`);
+                    navigate(`/zips/${Number(id)}`);
                 })
                 .catch(e => {
-                    showSnackbar("Wrong data.", "error");
+                    showSnackbar("Failed to update zip.", "error");
                 });
         }
     };
@@ -127,7 +136,7 @@ const AddZip: React.FC = () => {
     return (
         <div>
             <Box sx={{p: 4, maxWidth: 600, mx: "auto"}}>
-                <BigTextEntry text={"Upload a new zip file"} align={"center"}/>
+                <BigTextEntry text={"Edit Zip File"} align={"center"}/>
 
                 <TextField
                     fullWidth
@@ -153,11 +162,12 @@ const AddZip: React.FC = () => {
                 />
                 <Autocomplete
                     multiple
-                    options={types}
-                    getOptionLabel={(option) => `${option.name}`}
+                    options={types.filter(type => type.name.toLowerCase().includes(searchTerm.toLowerCase()))}
+                    getOptionLabel={(option) => option.name}
                     isOptionEqualToValue={(option, value) => option.id === value.id}
                     onInputChange={(_event, newInputValue: string) => setSearchTerm(newInputValue)}
                     onChange={handleTypeChange}
+                    value={selectedTypes}
                     renderInput={(params) => (
                         <TextField {...params} label="Select Types" margin="normal" />
                     )}
@@ -185,9 +195,9 @@ const AddZip: React.FC = () => {
                     variant="contained"
                     color="primary"
                     sx={{mt: 3}}
-                    onClick={upload}
+                    onClick={updateZip}
                 >
-                    Upload
+                    Save Changes
                 </Button>
             </Box>
             <CustomSnackBar
@@ -200,4 +210,4 @@ const AddZip: React.FC = () => {
     );
 };
 
-export {AddZip};
+export {ModifyZip};

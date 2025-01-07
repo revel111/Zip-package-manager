@@ -118,6 +118,7 @@ const ZipPage = () => {
 
                         {store.user.id === zip?.user_id && (
                             <Button
+                                onClick={() => navigate(    `/zips/${Number(id)}/modify`)}
                                 variant="contained"
                                 color="primary"
                             >

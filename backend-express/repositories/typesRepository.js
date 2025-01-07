@@ -49,6 +49,9 @@ const update = async (id, name) => {
 const countTypes = async (typeIds) => {
     const connection = await createConnection();
 
+    if (!typeIds || typeIds.length === 0)
+        return 0;
+
     const [rows] = await connection.query(`SELECT COUNT(*) AS total
                                            FROM types
                                            WHERE id IN (?)`, [typeIds]);

@@ -16,6 +16,7 @@ import Zips from "../pages/admin/tables/Zips.tsx";
 import ErrorIcon from '@mui/icons-material/Error';
 import DoDisturbIcon from '@mui/icons-material/DoDisturb';
 import TypePage from "../pages/types/TypePage.tsx";
+import {ModifyZip} from "../pages/zip/ModifyZip.tsx";
 
 
 const AppRoutes = () => {
@@ -48,12 +49,10 @@ const AppRoutes = () => {
                             element: <Types/>,
                         },
                         {
-                            // TODO
                             path: 'users',
                             element: <Users/>
                         },
                         {
-                            // TODO
                             path: 'zips',
                             element: <Zips/>
                         }
@@ -67,12 +66,14 @@ const AppRoutes = () => {
                             element: <FeedZip/>
                         },
                         {
-                            // TODO
                             path: ':id',
                             element: <ZipPage/>
                         },
                         {
-                            // TODO
+                            path: ':id/modify',
+                            element: <ModifyZip/>
+                        },
+                        {
                             path: 'add',
                             element: <AddZip/>
                         }

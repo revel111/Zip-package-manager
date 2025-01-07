@@ -1,4 +1,9 @@
-const {deleteAllByTypeId, saveAllTypeIds, getAllByZipId, deleteAllByZipId} = require('../repositories/zipTypesRepository');
+const {
+    deleteAllByTypeId,
+    saveAllTypeIds,
+    getAllByZipId,
+    deleteAllByZipId
+} = require('../repositories/zipTypesRepository');
 const {HandlingError} = require('../handlers/errorHandler');
 
 const deleteAll = async (typeId) => {
@@ -10,7 +15,8 @@ const saveAll = async (typeIds, zipId) => {
     if (typeIds.length !== await getCountTypes(typeIds))
         throw new HandlingError(404, 'Invalid type ids were provided.');
 
-    await saveAllTypeIds(typeIds, zipId);
+    if (typeIds && typeIds.length > 0)
+        await saveAllTypeIds(typeIds, zipId);
 };
 
 const getAllTypesByZipId = async (zipId) => {

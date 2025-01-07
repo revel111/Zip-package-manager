@@ -80,6 +80,17 @@ const getAllByZipType = async (typeId) => {
     return rows;
 };
 
+const update = async (name, fileName, zip, description, id) => {
+    const connection = await createConnection();
+
+    await connection.execute(`UPDATE zips
+                              SET name        = ?,
+                                  file_name   = ?,
+                                  zip_file    = ?,
+                                  description = ?
+                              WHERE id = ?`, [name, fileName, zip, description, id]);
+};
+
 module.exports = {
     countAllZips,
     create,
@@ -89,5 +100,6 @@ module.exports = {
     getAllByName,
     getAllByUserId,
     getAll,
-    getAllByZipType
+    getAllByZipType,
+    update
 };
