@@ -18,4 +18,7 @@ The project itself a website with the user-friendly UI for uploading and downloa
 
 
 ## Tech stack
-This project consists of two parts: backend and frontend. The backend was written in Express JS and the frontend was written in React primarly using components from [MUI](https://mui.com). Docker was also used for a simple transition from device to device.
+- Express JS;
+- React primarly using components from [MUI](https://mui.com);
+- Docker;
+- MySQL;
