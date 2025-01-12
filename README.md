@@ -3,10 +3,10 @@
 The project itself a website with the user-friendly UI for uploading and downloading zip files with the statistics about each user, such as how many zips he uploaded.
 
 ## Details
-- Three distinct roles: admin, user, guest. Each of them has a unique ability, such as a user should be authenticated to upload a zip file or a user has to have adming to promote, demote or delete a user's account.
-- CRUD operations: each entity in the project provides fully working interfaces for creating, reading, updating and deleting them (except roles).
+- Three distinct roles: admin, user, guest. Each of them has a unique ability, such as a user should be authenticated to upload a zip file or a user has to have admin rights to promote, demote or delete a user's account.
+- CRUD operations: for each entity in the project provides fully working interfaces for creating, reading, updating and deleting them (except roles).
 - Pagination: view tables and zip feed page tightly work with pagination.
-- Security: for authentication JWT tokens were used and certain handler and clauses on backend for safe resource managment.
+- Security: for authentication JWT tokens were used and certain handlers and clauses on backend for safe resource managment.
 - UI: the clean and minimalistic UI which might catch your eye.
 
 ### Pages
